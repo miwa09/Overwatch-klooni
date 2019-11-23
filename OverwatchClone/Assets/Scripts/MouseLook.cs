@@ -5,6 +5,7 @@ using UnityEngine;
 public class MouseLook : MonoBehaviour
 {
     public string inputPrefix = "P1"; //What player is being controller
+    public bool isControllableByMouse = false;
     public float mouseSensitivity = 100f;
     float mouseX;
     float mouseY;
@@ -20,8 +21,11 @@ public class MouseLook : MonoBehaviour
     }
     void Update()
     {
-        mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime; //Get the mouse and joystick X and Y axis'
-        mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        if (isControllableByMouse)
+        {
+            mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime; //Get the mouse and joystick X and Y axis'
+            mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        }
         float joyStickX = Input.GetAxis(inputPrefix + "JoystickLookX") * mouseSensitivity * Time.deltaTime;
         float joyStickY = Input.GetAxis(inputPrefix + "JoystickLookY") * mouseSensitivity * Time.deltaTime;
 
