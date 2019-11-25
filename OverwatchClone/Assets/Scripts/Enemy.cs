@@ -16,5 +16,6 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        print(hitpoints);
     }
 }

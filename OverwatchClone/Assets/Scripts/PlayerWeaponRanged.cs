@@ -21,12 +21,12 @@ public class PlayerWeaponRanged : MonoBehaviour
 
     private void Start()
     {
-         ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+         ray = playerCamera.ScreenPointToRay(playerCamera.transform.forward);
         ammo = maxAmmo; //So we don't have to set the ammo count in unity once the script is called upon, it'll always fill the magazine
     }
     void Update()
     {
-
+        Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward, Color.red);
         //BELOW: Shooting input, shooting cooldown and reloading
 
         float shoot = Input.GetAxis(inputPrefix + "PrimaryFire"); //Checks how much the right trigger has been pressed
@@ -43,7 +43,7 @@ public class PlayerWeaponRanged : MonoBehaviour
         {
             Shoot();
         }
-        if (Input.GetButtonDown(inputPrefix + "Reload")) //Reload without spending the whole magazine
+        if (Input.GetButtonDown(inputPrefix + "Reload") && ammo < 25) //Reload without spending the whole magazine
         {
             isReloading = true;
         }
@@ -61,7 +61,6 @@ public class PlayerWeaponRanged : MonoBehaviour
     {
         ammo--;
         print(ammo); //For testing purposes
-        Debug.DrawRay(transform.position, ray.direction, Color.red);
         canShoot = false;
     }
 
