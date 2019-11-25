@@ -25,7 +25,7 @@ public class PlayerMovementScript : MonoBehaviour
 
     private void Start()
     {
-        normalMoveSpeed = movementSpeed;
+        normalMoveSpeed = movementSpeed; //Grabs the normal movement speed and remembers it
     }
     void Update()
     {
@@ -34,6 +34,16 @@ public class PlayerMovementScript : MonoBehaviour
         if (isGrounded && velocity.y < 0) //Resets the falling speed when the player is on the ground
         {
             velocity.y = -1f;
+        }
+        if (!isGrounded) //While jumping, the character controller won't get stuck on 90 degree angles, and it won't kick off of ledges
+        {
+            controller.slopeLimit = 90f;
+            controller.stepOffset = 0f;
+        }
+        else //While on the ground, reset the values to normal so you can't climb walls or too high steps
+        {
+            controller.slopeLimit = 45f;
+            controller.stepOffset = 0.7f;
         }
 
         float x = Input.GetAxis(inputPrefix + "Horizontal"); //Gets the horizontal and vertical inputs from the controller or keyboard
