@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerWeaponRanged : MonoBehaviour
 {
     public string inputPrefix = "P1"; //What player is being controlled
+    public PlayerIdentifier playerIdentifier;
 
     public float maxDamage = 20; //The damage that occurs before the falloff minimum distance
     public float minDamage = 10; //The damage that occurs after the falloff maximum distance
@@ -16,8 +17,9 @@ public class PlayerWeaponRanged : MonoBehaviour
     float damage; //The damage the weapon inflicts after calculations
     int ammo; //How much ammo the weapon is currently holding
     public int maxAmmo; //The maximum amount of ammo the weapon can hold
-    public float shootingCooldown = 0.111f; //The rate of fire
+    public float shootingCooldown = 0.111f; //How many rounds are fired in a second
     bool canShoot; //To make sure it doesn't fire every frame
+    public bool disabled = false;
     float timer = 0f; //Rate of fire stuff
     float reloadTimer = 0f;
     public float reloadTime = 1.55f; //Reload time, will probably be obsolete later
@@ -36,6 +38,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     private void Start()
     {
         ammo = maxAmmo; //So we don't have to set the ammo count in unity once the script is called upon, it'll always fill the magazine
+        playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
         layer1 = 1 << layerMask1; //Making the layermask cull the selected layer instead
         layer1 = ~layer1;
     }
@@ -44,6 +47,11 @@ public class PlayerWeaponRanged : MonoBehaviour
         //Debug.DrawRay(gunOffsetPoint.position, gunRayVector * 1000f, Color.red); //Testing purposes
         //gunOffset = gunOffsetPoint.position - transform.position;
         //BELOW: Shooting input, shooting cooldown and reloading
+        if (disabled)
+        {
+            isReloading = false;
+            reloadTimer = 0f;
+        }
         float shoot = Input.GetAxis(inputPrefix + "PrimaryFire"); //Checks how much the right trigger has been pressed
         if (!canShoot && !isReloading)
         {
@@ -55,7 +63,7 @@ public class PlayerWeaponRanged : MonoBehaviour
                 //print(currentBurst + " " + currentDeviation); //Testing purposes
             }
         }
-        if (Input.GetButton(inputPrefix + "PrimaryFire") && canShoot || shoot > 0.9f && canShoot) //If the shoot input is pressed: shoot
+        if (Input.GetButton(inputPrefix + "PrimaryFire") && canShoot && !disabled || shoot > 0.9f && canShoot && !disabled) //If the shoot input is pressed: shoot
         {
             Shoot();
         }
@@ -64,7 +72,7 @@ public class PlayerWeaponRanged : MonoBehaviour
             currentBurst = 0;
             currentDeviation = 0;
         }
-        if (Input.GetButtonDown(inputPrefix + "Reload")) //Reload without spending the whole magazine
+        if (Input.GetButtonDown(inputPrefix + "Reload") && !disabled) //Reload without spending the whole magazine
         {
             isReloading = true;
         }
@@ -151,7 +159,7 @@ public class PlayerWeaponRanged : MonoBehaviour
         /*print("Reloading!");*/ //For testing purposes
         canShoot = false;
         reloadTimer += Time.deltaTime;
-        if (reloadTimer >= reloadTime)
+        if (reloadTimer >= reloadTime && !disabled)
         {
             reloadTimer = 0f;
             ammo = maxAmmo;

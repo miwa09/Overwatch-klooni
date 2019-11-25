@@ -8,9 +8,11 @@ public class Enemy : MonoBehaviour
     public float maxHitpoints = 100f;
     public ParticleSystem deathParticles;
     bool hasDied = false;
+    bool lastDamageSourceIsMelee = false;
     public bool indestructible = false;
     public float deathDuration = 5f; //How long the dead corpse stays
     Rigidbody rig;
+    public PlayerIdentifier lastDamageSource;
 
     private void Awake()
     {
@@ -31,6 +33,10 @@ public class Enemy : MonoBehaviour
 
     public void EnemyKill()
     {
+        if (lastDamageSourceIsMelee)
+        {
+            EnemyDeathCall(true);
+        }
         Renderer[] meshes = gameObject.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in meshes) //This is only so there is some feedback while testing
         {
@@ -43,10 +49,28 @@ public class Enemy : MonoBehaviour
         }
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
+
         hasDied = true; //So the kill function is only run once
     }
     public void DamageKnockback(Vector3 knockbackDirection, float knockbackAmount) //If something requires physical knockback
     {
         rig.AddForce(knockbackDirection.normalized * knockbackAmount);
+    }
+
+    public void EnemyDeathCall(bool melee)
+    {
+        if (melee)
+        {
+            lastDamageSource.RemoveEnemyFromQuickMelee(gameObject);
+        }
+    }
+
+    public void DamageSource(PlayerIdentifier player, bool melee)
+    {
+        lastDamageSource = player;
+        if (melee)
+        {
+            lastDamageSourceIsMelee = true;
+        }
     }
 }

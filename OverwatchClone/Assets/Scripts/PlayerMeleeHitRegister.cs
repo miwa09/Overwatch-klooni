@@ -8,9 +8,9 @@ public class PlayerMeleeHitRegister : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") && other.gameObject.GetComponent<EnemyColliderLocator>().isBody) //Make sure only the body collider goes in, so the enemies dont get hit twice
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") && !listHit.Contains(other.gameObject.transform.parent.gameObject)) //Make sure only the body collider goes in, so the enemies dont get hit twice
         {
-            listHit.Add(other.gameObject);
+            listHit.Add(other.gameObject.transform.parent.gameObject);
         }
     }
 
@@ -18,22 +18,22 @@ public class PlayerMeleeHitRegister : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) //Remove the enemies from the list that have left the trigger
         {
-            listHit.Remove(other.gameObject);
+            listHit.Remove(other.gameObject.transform.parent.gameObject);
         }
     }
 
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.K)) //For testing purposes
-        //{
-        //    print(listHit);
-        //}
-        foreach (GameObject obj in listHit)
-        {
-            if (obj == null) //If the object is 'killed' while in the trigger box, this lets the list know to remove them from the list, so we don't get any NullReferenceExceptions
-            {
-                listHit.Remove(obj);
-            }
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.K)) //For testing purposes
+    //    {
+    //        print(listHit);
+    //    }
+        //    foreach (GameObject obj in listHit)
+        //    {
+        //        if (obj == null) //If the object is 'killed' while in the trigger box, this lets the list know to remove them from the list, so we don't get any NullReferenceExceptions
+        //        {
+        //            listHit.Remove(obj);
+        //        }
+        //    }
+    //}
 }
