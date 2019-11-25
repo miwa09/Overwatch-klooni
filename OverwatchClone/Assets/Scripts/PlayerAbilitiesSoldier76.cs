@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerAbilitiesSoldier76 : MonoBehaviour
 {
+    public string playerIndex = "P1";
+    public PlayerIdentifier playerIdentifier;
+
+    public float sprintSpeedMultiplier = 1.5f;
+    public float 
     void Start()
     {
         
