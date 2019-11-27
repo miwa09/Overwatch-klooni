@@ -9,13 +9,14 @@ public class PlayerWeaponRanged : MonoBehaviour
 {
     public string inputPrefix = "P1"; //What player is being controlled
     public PlayerIdentifier playerIdentifier;
+    PlayerAbilitiesSoldier76 abilitiesScript;
 
     public float maxDamage = 20; //The damage that occurs before the falloff minimum distance
     public float minDamage = 10; //The damage that occurs after the falloff maximum distance
     public float damageFalloffMinDistance = 30; //At what range does the weapon remain most effective
     public float damageFalloffMaxDistance = 50; //At what range does the weapon become least effective
     float damage; //The damage the weapon inflicts after calculations
-    int ammo; //How much ammo the weapon is currently holding
+    public int ammo; //How much ammo the weapon is currently holding
     public int maxAmmo; //The maximum amount of ammo the weapon can hold
     public float shootingCooldown = 0.111f; //How many rounds are fired in a second
     bool canShoot; //To make sure it doesn't fire every frame
@@ -23,7 +24,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     float timer = 0f; //Rate of fire stuff
     float reloadTimer = 0f;
     public float reloadTime = 1.55f; //Reload time, will probably be obsolete later
-    bool isReloading = false; //So you can't reload during a reload
+    public bool isReloading = false; //So you can't reload during a reload
     public Transform gunOffsetPoint; //What point the gun is actually 'shooting' from, so the center of the camera towards the mouse
     Vector3 gunRayVector;
     public float maxDeviation = 2.4f;
@@ -39,6 +40,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     {
         ammo = maxAmmo; //So we don't have to set the ammo count in unity once the script is called upon, it'll always fill the magazine
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
+        abilitiesScript = gameObject.GetComponent<PlayerAbilitiesSoldier76>();
         layer1 = 1 << layerMask1; //Making the layermask cull the selected layer instead
         layer1 = ~layer1;
     }
@@ -66,11 +68,13 @@ public class PlayerWeaponRanged : MonoBehaviour
         if (Input.GetButton(inputPrefix + "PrimaryFire") && canShoot && !disabled || shoot > 0.9f && canShoot && !disabled) //If the shoot input is pressed: shoot
         {
             Shoot();
+            abilitiesScript.canRun = false;
         }
         if (!Input.GetButton(inputPrefix + "PrimaryFire") && shoot < 0.89f)
         {
             currentBurst = 0;
             currentDeviation = 0;
+            abilitiesScript.canRun = true;
         }
         if (Input.GetButtonDown(inputPrefix + "Reload") && !disabled) //Reload without spending the whole magazine
         {
@@ -82,6 +86,7 @@ public class PlayerWeaponRanged : MonoBehaviour
         }
         if (isReloading)
         {
+            abilitiesScript.canRun = false;
             Reload();
             ammoCount.text = "RELOADING!";
         } else ammoCount.text = ammo + " / " + maxAmmo; //Drawing the ammocount onto the UI

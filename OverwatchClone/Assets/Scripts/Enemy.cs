@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour
     public float deathDuration = 5f; //How long the dead corpse stays
     Rigidbody rig;
     public PlayerIdentifier lastDamageSource;
+    public Text hpUI;
 
     private void Awake()
     {
@@ -28,6 +30,10 @@ public class Enemy : MonoBehaviour
         if (indestructible) //Turn this on and whatever this script is in will be literally unkillable. Use with care. Mostly for testing stuff.
         {
             hitpoints = maxHitpoints;
+        }
+        if (hpUI != null)
+        {
+            hpUI.text = "" + hitpoints;
         }
     }
 
