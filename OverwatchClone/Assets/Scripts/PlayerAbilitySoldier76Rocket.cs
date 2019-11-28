@@ -33,12 +33,12 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
         }
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius, damageMask);
         int i = 0;
-        print("Objects hit: " + hitColliders.Length);
 
         if (hitColliders.Length > 0)
         {
             while (i < hitColliders.Length)
             {
+                print("Objects hit: " + hitColliders.Length + " Name: " + hitColliders[i].gameObject.name);
                 float distance = Vector3.Distance(hit, hitColliders[i].gameObject.transform.position) - 2f;
                 if (distance <= 0)
                 {
@@ -55,12 +55,11 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
                 }
                 if (hitColliders[i].gameObject.layer == LayerMask.NameToLayer("Enemy") && hitColliders[i].GetComponent<EnemyColliderLocator>().isBody)
                 {
-                    hitColliders[i].gameObject.GetComponentInParent<Enemy>().hitpoints -= explosionDamage;
+                    hitColliders[i].gameObject.GetComponentInParent<IDamageable>().TakeDamage(explosionDamage);
                 }
                 if (hitColliders[i].gameObject.layer == LayerMask.NameToLayer("Player1"))
                 {
-                    hitColliders[i].gameObject.GetComponent<PlayerHealthManager>().TakeDamage(explosionDamage / 2);
-                    print(explosionDamage);
+                        hitColliders[i].gameObject.GetComponent<IDamageable>();
                 }
                 i++;
                 print("Distance: " + distance + " Explosion damage: " + explosionDamage);

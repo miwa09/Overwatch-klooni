@@ -23,7 +23,7 @@ public class PainroomTrigger : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player 1") && takingDamage || other.gameObject.layer == LayerMask.NameToLayer("Player 2") && takingDamage) //Players within the trigger while it's not on cooldown will take damage
+        if (other.gameObject.tag == "Player") //Players within the trigger while it's not on cooldown will take damage
         {
             other.GetComponent<PlayerHealthManager>().TakeDamage(damage);
             takingDamage = false;

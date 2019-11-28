@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHealthManager : MonoBehaviour
+//public interface IDamageable {
+//    public void TakeDamage(float damage);
+//}
+public class PlayerHealthManager : MonoBehaviour/*, IDamageable*/
 {
     public float maxHealth = 100f; //The amount of health the player can never exceed. Also the default amount when the game starts
     public float health;

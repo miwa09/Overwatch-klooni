@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+//public interface IDamageable {
+//    void TakeDamage(float damage);
+//}
+public class Enemy : MonoBehaviour/*, IDamageable*/
 {
     public float hitpoints = 100f;
     public float maxHitpoints = 100f;
@@ -78,5 +81,8 @@ public class Enemy : MonoBehaviour
         {
             lastDamageSourceIsMelee = true;
         }
+    }
+    public void TakeDamage(float damage) {
+        hitpoints -= damage;
     }
 }

@@ -35,10 +35,13 @@ public class PlayerWeaponRanged : MonoBehaviour
     public int layerMask1 = 10; //Which layer we don't want the raycasting to see, it should always be the layer the player is on
     float currentBurst; //Counts how many shots have been fired in a continuous burst
     public ParticleSystem trails;
+    public bool ultOn;
+    PlayerAbilitiesSoldier76 abilityScript;
 
     private void Start()
     {
         ammo = maxAmmo; //So we don't have to set the ammo count in unity once the script is called upon, it'll always fill the magazine
+        abilitiesScript = gameObject.GetComponent<PlayerAbilitiesSoldier76>();
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
         abilitiesScript = gameObject.GetComponent<PlayerAbilitiesSoldier76>();
         layer1 = 1 << layerMask1; //Making the layermask cull the selected layer instead
@@ -95,7 +98,10 @@ public class PlayerWeaponRanged : MonoBehaviour
     void Shoot()
     {
         ammo--;
-        CalculateAngle();
+        if (ultOn)
+        {
+            gunRayVector = abilitiesScript.newGunRay;
+        } else CalculateAngle();
         currentBurst++;
         //print(ammo); //For testing purposes
         //Testing stuff
@@ -128,7 +134,7 @@ public class PlayerWeaponRanged : MonoBehaviour
                 {
                     damage = damage * 2;
                 }
-                targetGameObject.GetComponentInParent<Enemy>().hitpoints -= damage;
+                targetGameObject.GetComponentInParent<IDamageable>().TakeDamage(damage);
                 //targetGameObject.GetComponent<Enemy>().TakeDamage(location - gameObject.transform.position, 150f); //Knockback on hit, was more for fun testing than anything else
                 print("Distance: " + distance + " Damage: " + damage + " Hitpoints left: " + targetGameObject.GetComponentInParent<Enemy>().hitpoints);
             }
