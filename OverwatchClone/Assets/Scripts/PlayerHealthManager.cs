@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//public interface IDamageable {
-//    public void TakeDamage(float damage);
-//}
-public class PlayerHealthManager : MonoBehaviour/*, IDamageable*/
-{
+public class PlayerHealthManager : MonoBehaviour, IDamageable {
     public float maxHealth = 100f; //The amount of health the player can never exceed. Also the default amount when the game starts
     public float health;
     float healthBeforeHeal; //If you have base armor, this is so we can know how much armor you need after receiving the health you were missing

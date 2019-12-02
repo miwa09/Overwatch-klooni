@@ -46,11 +46,10 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
             }
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        //if (other.gameObject.layer == LayerMask.NameToLayer("Player1") || other.gameObject.layer == LayerMask.NameToLayer("Player2"))
-        //{
-        if (canHeal)
+        if (other.gameObject.tag == "Player") {
+            if (canHeal)
         {
             other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount);
             canHeal = false;
@@ -64,6 +63,6 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
                 canHeal = true;
             }
         }
-        //}
     }
+}
 }

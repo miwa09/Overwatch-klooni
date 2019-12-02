@@ -135,6 +135,7 @@ public class PlayerWeaponRanged : MonoBehaviour
                     damage = damage * 2;
                 }
                 targetGameObject.GetComponentInParent<IDamageable>().TakeDamage(damage);
+                targetGameObject.GetComponentInParent<Enemy>().lastDamageSource = playerIdentifier;
                 //targetGameObject.GetComponent<Enemy>().TakeDamage(location - gameObject.transform.position, 150f); //Knockback on hit, was more for fun testing than anything else
                 print("Distance: " + distance + " Damage: " + damage + " Hitpoints left: " + targetGameObject.GetComponentInParent<Enemy>().hitpoints);
             }

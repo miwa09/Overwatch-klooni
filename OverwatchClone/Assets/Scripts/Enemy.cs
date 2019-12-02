@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//public interface IDamageable {
-//    void TakeDamage(float damage);
-//}
-public class Enemy : MonoBehaviour/*, IDamageable*/
-{
+public class Enemy : MonoBehaviour, IDamageable {
     public float hitpoints = 100f;
     public float maxHitpoints = 100f;
     public ParticleSystem deathParticles;
@@ -74,13 +70,9 @@ public class Enemy : MonoBehaviour/*, IDamageable*/
         }
     }
 
-    public void DamageSource(PlayerIdentifier player, bool melee)
+    public void DamageSource(PlayerIdentifier player)
     {
         lastDamageSource = player;
-        if (melee)
-        {
-            lastDamageSourceIsMelee = true;
-        }
     }
     public void TakeDamage(float damage) {
         hitpoints -= damage;
