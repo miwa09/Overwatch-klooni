@@ -8,11 +8,13 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     public PlayerIdentifier playerIdentifier;
 
     public float sprintSpeedMultiplier = 1.5f;
-    float baseSpeedMultiplier;
+    float runSpeed;
+    float baseSpeed;
+    float sprintTimer = 0;
     public bool canRun = true;
     public bool isRunning = false;
     bool endingRun = false;
-    PlayerMovementScript moveScript;
+    PlayerMover moveScript;
     PlayerWeaponRanged gunScript;
     public GameObject healAbilityPrefab;
     bool ability3CooldownOn = false;
@@ -22,6 +24,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     int healCooldownCounter = 0;
     public Text healUI;
     public GameObject rocketAbilityPrefab;
+    float rocketInput = 0f;
     public GameObject cameraLook;
     bool ability1CooldownOn = false;
     float ability1CooldownTimer = 0;
@@ -53,12 +56,12 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
 
     void Start() {
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
-        moveScript = gameObject.GetComponent<PlayerMovementScript>();
+        moveScript = gameObject.GetComponent<PlayerMover>();
         gunScript = gameObject.GetComponent<PlayerWeaponRanged>();
-        baseSpeedMultiplier = sprintSpeedMultiplier;
         normalGunDeviation = gunScript.maxDeviation;
         normalGunReload = gunScript.reloadTime;
-        
+        runSpeed = moveScript.movementSpeed * sprintSpeedMultiplier;
+        baseSpeed = moveScript.movementSpeed;
     }
 
     private void Update() {
@@ -110,14 +113,14 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         if (ultOn) {
             UltiActive();
         }
-
+        rocketInput = Input.GetAxis(inputPrefix + "Ability1");
 
     }
     public void SAbilitySprint() {
         if (Input.GetButton(inputPrefix + "Ability2") && canRun) {
             SprintStart();
         }
-        if (isRunning && Input.GetButton(inputPrefix + "PrimaryFire")) {
+        if (isRunning && (Input.GetButton(inputPrefix + "PrimaryFire") || gunScript.shoot > 0.9f)) {
             SprintEndBuffer();
             endingRun = false;
         }
@@ -140,7 +143,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     }
 
     public void SAbilityRockets() {
-        if (Input.GetButton(inputPrefix + "Ability1")) {
+        if (rocketInput > 0.9f) {
             Instantiate(rocketAbilityPrefab, gunScript.gunOffsetPoint.position, cameraLook.transform.rotation);
             ability1CooldownOn = true;
         }
@@ -153,7 +156,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
 
     void SprintStart() {
         if (endingRun) {
-            sprintSpeedMultiplier = baseSpeedMultiplier;
+            moveScript.moverSprint(runSpeed);
             endingRun = false;
         }
         if (isRunning) {
@@ -162,28 +165,28 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         }
         gunScript.disabled = true;
         isRunning = true;
-        sprintSpeedMultiplier = baseSpeedMultiplier;
     }
 
     void Sprint() {
-        moveScript.movementSpeed = moveScript.movementSpeed * sprintSpeedMultiplier;
-        print(moveScript.movementSpeed);
+        moveScript.moverSprint(runSpeed);
     }
     void SprintEndBuffer() {
         if (endingRun && Input.GetButton(inputPrefix + "Ability2")) {
             SprintStart();
             return;
         }
-        if (sprintSpeedMultiplier > 1) {
-            sprintSpeedMultiplier -= 1.67f * Time.deltaTime;
-        }
-        if (sprintSpeedMultiplier <= 1) {
+        moveScript.moverSprint(baseSpeed);
+        sprintTimer += Time.deltaTime;
+        float sprintTicker = 0.3f;
+        if (sprintTimer >= sprintTicker) {
+            sprintTimer = 0;
             SprintEnd();
-            return;
         }
+        
     }
     void SprintEnd() {
         gunScript.disabled = false;
+        moveScript.moverSprint(baseSpeed);
         isRunning = false;
     }
 
@@ -239,7 +242,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         foreach (Collider obj in enemiesHit) {
             Vector3 hitDirection = gunScript.gunOffsetPoint.transform.position + obj.transform.position;
             Ray ray = new Ray(gunScript.gunOffsetPoint.transform.position, hitDirection);
-            if (Physics.Raycast(ray, ultMaxDistance, groundMask)) { //If the enemy is behind a wall, it's invisible
+            if (Physics.Raycast(ray, ultMaxDistance, groundMask)) { //If the enemy is behind a wall, or too far away, it's invisible
                 if (invisible.Contains(obj.transform)) {
                     invisible.Add(obj.transform);
                 }
