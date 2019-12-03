@@ -60,28 +60,21 @@ public class PlayerMover : MonoBehaviour
             Vector3 inputVelocity = new Vector3(Input.GetAxis(inputPrefix + "Horizontal"), 0, Input.GetAxis(inputPrefix + "Vertical"));
             inputVelocity = transform.TransformDirection(inputVelocity);
             Vector3 targetVelocity = inputVelocity * movementSpeed;
-        if (targetVelocity.magnitude > 0.1f) {
+        if (targetVelocity.magnitude > 3f) {
             lastTargetVelocity = targetVelocity;
         }
 
-        if (Physics.Raycast(groundCheck.position, targetVelocity, out groundHit, Vector3.Distance(groundCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask)) {
+        if (Physics.Raycast(groundCheck.position, targetVelocity, out groundHit, Vector3.Distance(groundCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask) && isGrounded && !jumped) {
             Vector3 location = groundHit.point;
             rig.position += new Vector3(0, location.y - groundCheck.position.y, 0);
         }
-        if (Physics.Raycast(frontCheck.position, targetVelocity, out frontHit, Vector3.Distance(frontCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask)) {
+        if (Physics.Raycast(frontCheck.position + targetVelocity.normalized * 0.3f, targetVelocity, out frontHit, Vector3.Distance(frontCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask) && !hasHitWall) {
             Vector3 location = frontHit.point;
-            if (!stopped) {
-                rig.position = location - targetVelocity.normalized * 0.6f;
-            }
+            rig.position = location - targetVelocity.normalized * 0.6f;
             hasHitWall = true;
-            stopped = true;
-            if (stopped) {
-                if (!Physics.Raycast(frontCheck.position + lastTargetVelocity.normalized * 0.6f, lastTargetVelocity, out frontHit, Vector3.Distance(frontCheck.position, lastTargetVelocity) * Time.fixedDeltaTime)) {
-                    stopped = false;
-                    
-                    print("not stopped");
-                }
-            }
+        }
+        if (!Physics.Raycast(frontCheck.position + lastTargetVelocity.normalized * 0.3f, lastTargetVelocity, out frontHit, Vector3.Distance(frontCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask) && hasHitWall) {
+            hasHitWall = false;
         }
 
 
@@ -100,7 +93,7 @@ public class PlayerMover : MonoBehaviour
             velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
             velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
             velocityChange.y = 0;
-            if (!stopped && !hasHitWall) {
+            if (!hasHitWall) {
             rig.AddForce(velocityChange, ForceMode.VelocityChange);
         }
     }

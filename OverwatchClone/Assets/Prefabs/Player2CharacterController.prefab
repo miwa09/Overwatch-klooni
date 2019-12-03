@@ -422,9 +422,6 @@ GameObject:
   - component: {fileID: 8402668638754428042}
   - component: {fileID: 8402668638754428020}
   - component: {fileID: 8402668638754428022}
-  - component: {fileID: 8402668638754428040}
-  - component: {fileID: 8402668638754428019}
-  - component: {fileID: 8402668638754428023}
   - component: {fileID: 6974972296186529395}
   - component: {fileID: 6974972296186529394}
   - component: {fileID: 6974972296186529393}
@@ -468,8 +465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: 2
-  playerHasQuickMelee: 1
-  playerHasRangedWeapon: 1
+  playerHasQuickMelee: 0
+  playerHasRangedWeapon: 0
 --- !u!114 &8402668638754428022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,103 +482,12 @@ MonoBehaviour:
   maxHealth: 200
   health: 0
   tempArmor: 0
-  baseArmorMax: 0
+  baseArmorMax: 50
   permArmor: 0
   hud_health: {fileID: 8402668639411164871}
   hud_baseArmor: {fileID: 8402668639174604366}
   hud_permArmor: {fileID: 8402668638520146480}
   hud_tempArmor: {fileID: 8402668639856731653}
---- !u!114 &8402668638754428040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8402668638754428044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1406499926487154fb326b98628a9fa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputPrefix: P2
-  playerIdentifier: {fileID: 0}
-  maxDamage: 20
-  minDamage: 10
-  damageFalloffMinDistance: 30
-  damageFalloffMaxDistance: 50
-  ammo: 0
-  maxAmmo: 25
-  shootingCooldown: 0.11
-  disabled: 0
-  reloadTime: 1.55
-  isReloading: 0
-  gunOffsetPoint: {fileID: 8402668639459512791}
-  maxDeviation: 2.4
-  ammoCount: {fileID: 8402668639816030194}
-  layerMask1: 10
-  trails: {fileID: 8402668639060456284}
-  ultOn: 0
---- !u!114 &8402668638754428019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8402668638754428044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 270ad3229c48b57499205f333dc77b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputPrefix: P2
-  playerIdentifier: {fileID: 8402668638754428020}
-  sprintSpeedMultiplier: 1.5
-  canRun: 1
-  isRunning: 0
-  healAbilityPrefab: {fileID: 1428121289450797463, guid: 36229db4ec6b73546974385d19c3c27f,
-    type: 3}
-  healCooldown: 15
-  healUI: {fileID: 4910580716112087057}
-  rocketAbilityPrefab: {fileID: 5117031411925014109, guid: c72daedbf276ce741b8b581c99ecb08e,
-    type: 3}
-  cameraLook: {fileID: 8402668639459512808}
-  rocketCooldown: 8
-  rocketUI: {fileID: 6344225535109951885}
-  ultCharge: 2300
-  ultChargeMax: 2310
-  ultUI: {fileID: 8256806348435821897}
-  ultiGunReload: 0.65
-  ultDuration: 6
-  ultAngle: 0
-  ultMaxDistance: 0
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  newGunRay: {x: 0, y: 0, z: 0}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!114 &8402668638754428023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8402668638754428044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cedf059bfb3f78841b39ff83c98e96fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputPrefix: P1
-  playerIdentifier: {fileID: 8402668638754428020}
-  playerCamera: {fileID: 8402668639459512791}
-  cameraAnimation: {fileID: 8402668640117072595}
-  canMelee: 1
-  meleeCooldown: 1
-  meleeRange: 2.5
-  knockback: 60
-  meleeDamage: 30
 --- !u!54 &6974972296186529395
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -635,6 +541,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   playerCamera: {fileID: 8402668639459512790}
+  frontCheck: {fileID: 0}
 --- !u!1 &8402668638851339157
 GameObject:
   m_ObjectHideFlags: 0

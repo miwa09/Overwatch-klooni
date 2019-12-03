@@ -52,6 +52,8 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     public Vector3 newGunRay;
     public LayerMask groundMask;
     List<Collider> seenEnemies;
+    public Camera playerCamera;
+    public GameObject ultInactiveMarker;
 
 
     void Start() {
@@ -220,6 +222,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     }
 
     void UltiActive() {
+        UltiSeekTargets();
         ultTimer2 += Time.deltaTime;
         if (ultTimer2 >= ultTicker2) {
             ultTimer2 -= ultTicker2;
@@ -256,6 +259,14 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         foreach (Collider obj in enemiesHit) {
             if (!invisible.Contains(obj.transform)) {
                 seenEnemies.Add(obj);
+            }
+        }
+        if (enemiesHit.Length > 0) {
+            foreach (Collider obj in seenEnemies) {
+                Vector3 markerPos = playerCamera.WorldToScreenPoint(obj.transform.position);
+                GameObject markerObj = Instantiate(ultInactiveMarker, markerPos, obj.transform.rotation);
+                markerObj.transform.position = markerPos;
+
             }
         }
     }
