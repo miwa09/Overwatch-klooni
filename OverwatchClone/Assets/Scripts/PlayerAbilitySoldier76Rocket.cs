@@ -39,7 +39,7 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
             while (i < hitColliders.Length)
             {
                 print("Objects hit: " + hitColliders.Length + " Name: " + hitColliders[i].gameObject.name);
-                float distance = Vector3.Distance(hit, hitColliders[i].gameObject.transform.position) - 2f;
+                float distance = Vector3.Distance(hit, hitColliders[i].gameObject.transform.position) - 1.5f;
                 if (distance <= 0)
                 {
                     distance = 0;
@@ -57,12 +57,13 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
                 {
                     hitColliders[i].gameObject.GetComponentInParent<IDamageable>().TakeDamage(explosionDamage);
                 }
-                if (hitColliders[i].gameObject.layer == LayerMask.NameToLayer("Player1"))
+                if (hitColliders[i].gameObject.tag == "Player")
                 {
-                        hitColliders[i].gameObject.GetComponent<IDamageable>();
+                        hitColliders[i].gameObject.GetComponent<IDamageable>().TakeDamage(explosionDamage/2);
+                    hitColliders[i].gameObject.GetComponent<Rigidbody>().AddExplosionForce(10f, gameObject.transform.position, 3, 0, ForceMode.VelocityChange);
+                    print("player hit");
                 }
                 i++;
-                print("Distance: " + distance + " Explosion damage: " + explosionDamage);
             }
         }
 

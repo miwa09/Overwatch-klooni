@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerWeaponMelee : MonoBehaviour
 {
-    public string InputPrefix = "P1"; //Let the script know which player is in question
+    public string inputPrefix = "P1"; //Let the script know which player is in question
     public PlayerIdentifier playerIdentifier;
     public Transform playerCamera;
     public CameraAnimationManager cameraAnimation; //For camera animations as you melee
@@ -49,7 +49,7 @@ public class PlayerWeaponMelee : MonoBehaviour
                 cooldown = false;
             }
         }
-        if (Input.GetButtonDown(InputPrefix + "Melee") && canMelee) //Get the input for melee
+        if (Input.GetButtonDown(inputPrefix + "Melee") && canMelee) //Get the input for melee
         {
             Vector3 centerpoint = (playerCamera.position + playerCamera.forward * meleeRange) / 2;
             Vector3 size = new Vector3(meleeRange / 2, meleeRange / 2);

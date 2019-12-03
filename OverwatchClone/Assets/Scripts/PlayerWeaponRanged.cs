@@ -37,6 +37,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     public ParticleSystem trails;
     public bool ultOn;
     PlayerAbilitiesSoldier76 abilityScript;
+    public float shoot;
 
     private void Start()
     {
@@ -57,7 +58,7 @@ public class PlayerWeaponRanged : MonoBehaviour
             isReloading = false;
             reloadTimer = 0f;
         }
-        float shoot = Input.GetAxis(inputPrefix + "PrimaryFire"); //Checks how much the right trigger has been pressed
+        shoot = Input.GetAxis(inputPrefix + "PrimaryFire"); //Checks how much the right trigger has been pressed
         if (!canShoot && !isReloading)
         {
             timer += Time.deltaTime;

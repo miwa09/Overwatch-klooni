@@ -16,7 +16,7 @@ public class TestSpawnEnemy : MonoBehaviour
     bool canSpawn = true;
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1) && canSpawn)
+        if ((Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.Joystick1Button6) || Input.GetKeyDown(KeyCode.Joystick2Button6)) && canSpawn)
         {
             Instantiate(enemy, spawns[spawnNo].position + offset, rotation, parent);
             spawnNo++;
