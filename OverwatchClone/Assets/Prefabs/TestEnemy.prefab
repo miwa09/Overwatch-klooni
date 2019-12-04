@@ -5405,7 +5405,7 @@ NavMeshAgent:
   m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.75
-  m_Speed: 4
+  m_Speed: 3
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -5431,5 +5431,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypoints: []
   waypointTriggerDistance: 1
-  gameManager: {fileID: 448338411269665992, guid: b4d4b7ece42258b448e5d13b6fd701b0,
-    type: 3}

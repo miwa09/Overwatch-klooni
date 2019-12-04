@@ -55,7 +55,9 @@ public class PlayerWeaponMelee : MonoBehaviour
             Vector3 size = new Vector3(meleeRange / 2, meleeRange / 2);
             Collider[] hitList = Physics.OverlapBox(centerpoint, size, playerCamera.transform.rotation);
             foreach (Collider enemy in hitList) {
-                GetComponentInParent<IDamageable>().TakeDamage(meleeDamage);
+                if (enemy.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+                    GetComponentInParent<IDamageable>().TakeDamage(meleeDamage);
+                }
             }
             playerWeapon.disabled = true; 
             cameraAnimation.CameraMeleeShake(); //Simple animation

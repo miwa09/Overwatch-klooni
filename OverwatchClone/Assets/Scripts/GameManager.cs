@@ -24,10 +24,6 @@ public class GameManager : MonoBehaviour
 
     private void Update() {
         Clock();
-        if (secondsPassed >= 5 && secondsPassed < 10) {
-            spawnMaster.SpawnWave1(intensity);
-            canSpawn = false;
-        }
         if (doorHP <= 0) {
             if (doorHP < 0) {
                 doorHP = 0;
@@ -37,6 +33,7 @@ public class GameManager : MonoBehaviour
         if (playersDead == 2) {
             GameLost();
         }
+        Intensity1SpawnBasic();
     }
 
     void Clock() {
@@ -71,6 +68,15 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1;
             gameOverUI.text = "";
             resetUI.text = "";
+        }
+    }
+
+    void Intensity1SpawnBasic() {
+        if ((secondsPassed >= 10 && secondsPassed < 20) || (secondsPassed >= 30 && secondsPassed < 40) || (secondsPassed >= 50 && secondsPassed < 59)) {
+            spawnMaster.Spawn1Basic();
+        }
+        if ((secondsPassed >= 5 && secondsPassed < 15) || (secondsPassed >= 25 && secondsPassed < 35) || (secondsPassed >= 45 && secondsPassed < 55)) {
+            spawnMaster.Spawn5Basic();
         }
     }
 }
