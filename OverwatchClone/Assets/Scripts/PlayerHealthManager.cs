@@ -24,6 +24,15 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     public Text hud_baseArmor;
     public Text hud_permArmor;
     public Text hud_tempArmor;
+    Vector3 spawnPoint;
+    public int respawnTime = 10;
+    float respawnTimer = 0;
+    float respawnTicker = 1;
+    int respawnSecsPassed = 0;
+    public Text respawnUI;
+    public Text deathText;
+    GameManager gameManager;
+    bool sendOnce = true;
 
     bool hasTempArmor() //Check to see if there is temporary armor in play, so we can remove it when it's duration is up
     {
@@ -38,6 +47,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         health = maxHealth;
         baseArmor = baseArmorMax;
         maxPermArmor = permArmor;
+        spawnPoint = transform.position;
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     void Update()
@@ -92,6 +103,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             hud_permArmor.text = "" + permArmor;
         } else hud_permArmor.text = "";
 
+        if (health <= 0) {
+            PlayerDeath();
+        }
         //hud.color = Color.red;
         //}
         //print("Base: " + baseArmor + " Perm: " + permArmor + " Temp: " + tempArmor);
@@ -175,5 +189,47 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     {
         permArmor += armor;
         maxPermArmor = maxArmor;
+    }
+
+    void PlayerDeath() {
+        if (sendOnce) {
+            gameManager.playersDead ++;
+            sendOnce = false;
+        }
+        health = 0;
+        baseArmor = 0;
+        permArmor = 0;
+        tempArmor = 0;
+        if (GetComponent<PlayerIdentifier>().player == 1) {
+            GetComponent<PlayerWeaponRanged>().enabled = false;
+            GetComponent<PlayerWeaponMelee>().enabled = false;
+            GetComponent<PlayerAbilitiesSoldier76>().enabled = false;
+        }
+        GetComponent<PlayerMover>().enabled = false;
+        respawnTimer += Time.deltaTime;
+        deathText.text = "You've died!";
+        respawnUI.text = "Respawn in: " + (respawnTime - respawnSecsPassed);
+        if (respawnTimer >= respawnTicker) {
+            respawnTimer -= respawnTicker;
+            respawnSecsPassed++;
+        }
+        if (respawnSecsPassed >= respawnTime) {
+            PlayerRespawn();
+        }
+    }
+    void PlayerRespawn() {
+        gameManager.playersDead--;
+        sendOnce = true;
+        health = maxHealth;
+        baseArmor = baseArmorMax;
+        deathText.text = "";
+        respawnUI.text = "";
+        GetComponent<Rigidbody>().position = spawnPoint;
+        if (GetComponent<PlayerIdentifier>().player == 1) {
+            GetComponent<PlayerWeaponRanged>().enabled = true;
+            GetComponent<PlayerWeaponMelee>().enabled = true;
+            GetComponent<PlayerAbilitiesSoldier76>().enabled = true;
+        }
+        GetComponent<PlayerMover>().enabled = true;
     }
 }

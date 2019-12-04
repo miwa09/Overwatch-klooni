@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour, IDamageable {
         }
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
-
+        gameObject.GetComponent<BasicEnemyMovement>().Death();
         hasDied = true; //So the kill function is only run once
     }
     public void DamageKnockback(Vector3 knockbackDirection, float knockbackAmount) //If something requires physical knockback

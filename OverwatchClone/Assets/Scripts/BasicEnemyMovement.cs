@@ -6,30 +6,53 @@ using UnityEngine.AI;
 public class BasicEnemyMovement : MonoBehaviour
 {
     Vector3 origPoint;
-    public Transform waypoint;
-    NavMeshAgent ai;
-    bool reached = false;
-    
+    public Transform[] waypoints;
+    public float waypointTriggerDistance = 1f;
+    int nextWaypoint = 0;
+    NavMeshAgent agent;
+    bool exploded = false;
+
+    public void GoNextWaypoint() {
+        agent.destination = waypoints[nextWaypoint].position;
+    }
     void Start()
     {
-        origPoint = new Vector3(transform.position.x, 0, transform.position.z);
-        ai = gameObject.GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
+        GoNextWaypoint();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!reached) {
-            ai.SetDestination(waypoint.position);
+        var d = Vector3.Distance(transform.position, waypoints[nextWaypoint].position);
+        if (d < waypointTriggerDistance) {
+            if (nextWaypoint + 1 > waypoints.Length - 1 && !exploded) {
+                Explode();
+            } else if (!exploded) {
+                nextWaypoint++;
+                GoNextWaypoint();
+            }
         }
-        if (Vector3.Distance(transform.position, waypoint.position) < 1.5f) {
-            reached = true;
+
+    }
+
+    void Explode() {
+        agent.isStopped = true;
+        agent.enabled = false;
+        Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
+        GameManager gm = FindObjectOfType<GameManager>();
+        gm.doorHP -= 40;
+        foreach (Collider obj in playersHit) {
+            if (obj.tag == "Player") {
+                obj.GetComponent<IDamageable>().TakeDamage(20);
+            }
         }
-        if (reached) {
-            ai.SetDestination(origPoint);
-        }
-        if (Vector3.Distance(transform.position, origPoint) < 1.5f) {
-            reached = false;
+        GetComponent<Enemy>().EnemyKill();
+        exploded = true;
+    }
+    public void Death() {
+        if (agent.isActiveAndEnabled) {
+            agent.isStopped = true;
+            agent.enabled = false;
         }
     }
 }
