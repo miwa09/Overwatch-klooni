@@ -33,7 +33,19 @@ public class GameManager : MonoBehaviour
         if (playersDead == 2) {
             GameLost();
         }
-        Intensity1SpawnBasic();
+        if (intensity == 1) {
+            Intensity1SpawnBasic();
+        }
+        if (intensity == 2) {
+            Intensity2SpawnBasic();
+        }if (minutes <= 4) {
+            intensity = 2;
+        }
+        if (minutes <= 0 && seconds <= 0) {
+            minutes = 0;
+            seconds = 0;
+            GameWon();
+        }
     }
 
     void Clock() {
@@ -76,7 +88,29 @@ public class GameManager : MonoBehaviour
             spawnMaster.Spawn1Basic();
         }
         if ((secondsPassed >= 5 && secondsPassed < 15) || (secondsPassed >= 25 && secondsPassed < 35) || (secondsPassed >= 45 && secondsPassed < 55)) {
-            spawnMaster.Spawn5Basic();
+            spawnMaster.Spawn3Basic();
+        }
+    }
+
+    void Intensity2SpawnBasic() {
+        if ((secondsPassed >= 10 && secondsPassed < 20) || (secondsPassed >= 30 && secondsPassed < 40) || (secondsPassed >= 50 && secondsPassed < 59)) {
+            spawnMaster.Spawn1Basic();
+        }
+        if ((secondsPassed >= 5 && secondsPassed < 15) || (secondsPassed >= 25 && secondsPassed < 35) || (secondsPassed >= 45 && secondsPassed < 55)) {
+            spawnMaster.Spawn3Basic();
+            spawnMaster.Spawn2Basic();
+        }
+    }
+
+    void GameWon() {
+        Time.timeScale = 0;
+        gameOverUI.text = "Game Won!";
+        resetUI.text = "Press 'Start' to go again";
+        if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7)) {
+            SceneManager.LoadScene(0);
+            Time.timeScale = 1;
+            gameOverUI.text = "";
+            resetUI.text = "";
         }
     }
 }

@@ -39,10 +39,42 @@ public class SpawnMaster : MonoBehaviour
             }
         }
     }
+
+    public void Spawn3Basic() {
+        if (canSpawn) {
+            GameObject spawnedEnemy = Instantiate(spawnBasicEnemy, spawn3.position, spawn3.rotation);
+            spawnedEnemy.GetComponent<BasicEnemyMovement>().waypoints = spawn3waypoints;
+            EnableNavMeshAgent(spawnedEnemy);
+            canSpawn = false;
+        }
+        if (!canSpawn) {
+            spawnTimer += Time.deltaTime;
+            if (spawnTimer >= spawnTicker) {
+                spawnTimer = 0;
+                canSpawn = true;
+            }
+        }
+    }
+
+    public void Spawn2Basic() {
+        if (canSpawn) {
+            GameObject spawnedEnemy = Instantiate(spawnBasicEnemy, spawn2.position, spawn2.rotation);
+            spawnedEnemy.GetComponent<BasicEnemyMovement>().waypoints = spawn2waypoints;
+            EnableNavMeshAgent(spawnedEnemy);
+            canSpawn = false;
+        }
+        if (!canSpawn) {
+            spawnTimer += Time.deltaTime;
+            if (spawnTimer >= spawnTicker) {
+                spawnTimer = 0;
+                canSpawn = true;
+            }
+        }
+    }
     public void Spawn5Basic() {
         if (canSpawn) {
             GameObject spawnedEnemy = Instantiate(spawnBasicEnemy, spawn5.position, spawn5.rotation);
-            if (RandomizeRoute(1,2) == 1) {
+            if (RandomizeRoute(1, 2) == 1) {
                 spawnedEnemy.GetComponent<BasicEnemyMovement>().waypoints = spawn5waypoints1;
             }
             if (RandomizeRoute(1, 2) == 2) {

@@ -5,12 +5,13 @@ using UnityEngine.AI;
 
 public class BasicEnemyMovement : MonoBehaviour
 {
-    Vector3 origPoint;
     public Transform[] waypoints;
     public float waypointTriggerDistance = 1f;
     int nextWaypoint = 0;
     NavMeshAgent agent;
     bool exploded = false;
+    float explodeTimer = 0;
+    float explodeTicker = 1;
 
     public void GoNextWaypoint() {
         agent.destination = waypoints[nextWaypoint].position;
@@ -36,22 +37,23 @@ public class BasicEnemyMovement : MonoBehaviour
     }
 
     void Explode() {
-        agent.isStopped = true;
-        agent.enabled = false;
-        Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
-        GameManager gm = FindObjectOfType<GameManager>();
-        gm.doorHP -= 40;
-        foreach (Collider obj in playersHit) {
-            if (obj.tag == "Player") {
-                obj.GetComponent<IDamageable>().TakeDamage(20);
+        agent.destination = transform.position;
+        explodeTimer += Time.deltaTime;
+            Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
+            GameManager gm = FindObjectOfType<GameManager>();
+            gm.doorHP -= 40;
+            foreach (Collider obj in playersHit) {
+                if (obj.tag == "Player") {
+                    obj.GetComponent<IDamageable>().TakeDamage(20);
+                }
             }
-        }
-        GetComponent<Enemy>().EnemyKill();
+            GetComponent<Enemy>().EnemyKill();
+            agent.enabled = false;
         exploded = true;
     }
     public void Death() {
         if (agent.isActiveAndEnabled) {
-            agent.isStopped = true;
+            agent.nextPosition = transform.position;
             agent.enabled = false;
         }
     }

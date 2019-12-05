@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour, IDamageable {
         {
             hitpoints = maxHitpoints;
         }
-        if (hpUI != null)
+        if (hpUI != null && !hasDied)
         {
             hpUI.text = "" + hitpoints;
         }
@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour, IDamageable {
 
     public void EnemyKill()
     {
+        hitpoints = 0;
+        hpUI.text = "Dead";
         if (lastDamageSourceIsMelee)
         {
             EnemyDeathCall(true);
