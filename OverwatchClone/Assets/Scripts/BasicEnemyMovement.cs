@@ -38,18 +38,22 @@ public class BasicEnemyMovement : MonoBehaviour
 
     void Explode() {
         agent.destination = transform.position;
-        explodeTimer += Time.deltaTime;
-            Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
-            GameManager gm = FindObjectOfType<GameManager>();
-            gm.doorHP -= 40;
-            foreach (Collider obj in playersHit) {
-                if (obj.tag == "Player") {
-                    obj.GetComponent<IDamageable>().TakeDamage(20);
+            if (!exploded && !GetComponent<Enemy>().hasDied) {
+            explodeTimer += Time.deltaTime;
+            if (explodeTimer >= explodeTicker) {
+                Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
+                GameManager gm = FindObjectOfType<GameManager>();
+                gm.doorHP -= 40;
+                foreach (Collider obj in playersHit) {
+                    if (obj.tag == "Player") {
+                        obj.GetComponent<IDamageable>().TakeDamage(20);
+                    }
                 }
+                GetComponent<Enemy>().EnemyKill();
+                agent.enabled = false;
+                exploded = true;
             }
-            GetComponent<Enemy>().EnemyKill();
-            agent.enabled = false;
-        exploded = true;
+        }
     }
     public void Death() {
         if (agent.isActiveAndEnabled) {

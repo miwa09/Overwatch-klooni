@@ -38,7 +38,6 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
         {
             while (i < hitColliders.Length)
             {
-                print("Objects hit: " + hitColliders.Length + " Name: " + hitColliders[i].gameObject.name);
                 float distance = Vector3.Distance(hit, hitColliders[i].gameObject.transform.position) - 1.5f;
                 if (distance <= 0)
                 {
@@ -61,7 +60,6 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
                 {
                         hitColliders[i].gameObject.GetComponent<IDamageable>().TakeDamage(explosionDamage/2);
                     hitColliders[i].gameObject.GetComponent<Rigidbody>().AddExplosionForce(10f, gameObject.transform.position, 3, 0, ForceMode.VelocityChange);
-                    print("player hit");
                 }
                 i++;
             }

@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour, IDamageable {
     public float hitpoints = 100f;
     public float maxHitpoints = 100f;
     public ParticleSystem deathParticles;
-    bool hasDied = false;
+    public bool hasDied = false;
     bool lastDamageSourceIsMelee = false;
     public bool indestructible = false;
     public float deathDuration = 5f; //How long the dead corpse stays
