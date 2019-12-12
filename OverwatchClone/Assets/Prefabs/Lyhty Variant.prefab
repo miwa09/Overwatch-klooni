@@ -10,22 +10,22 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_Name
-      value: Lyhty
+      value: Lyhty Variant
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.891899
+      value: 7.767
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.497
+      value: 1.446
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.11234
+      value: -1.01
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
@@ -70,17 +70,17 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.04
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.04
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.05
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: -1504981713932161579, guid: cc53509cd5055454d9626577c27d9961,
         type: 3}

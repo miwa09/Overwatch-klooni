@@ -10,22 +10,27 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
       propertyPath: m_Name
-      value: Grave 2
+      value: Grave 2 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: a21f58081eb032e47a004919bdada076,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6a321b032e1371f4e8e5e46b7b2362b3, type: 2}
     - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.745853
+      value: 5.13502
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.55999994
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.55674684
+      value: -1.1374543
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
@@ -67,10 +72,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -1504981713932161579, guid: a21f58081eb032e47a004919bdada076,
+    - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6a321b032e1371f4e8e5e46b7b2362b3, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: a21f58081eb032e47a004919bdada076,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a21f58081eb032e47a004919bdada076, type: 3}
