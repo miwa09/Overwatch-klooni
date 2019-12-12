@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public float doorHP = 2000;
     bool canSpawn = true;
     public int playersDead = 0;
+    public bool spawnEnemies = true;
 
     private void Update() {
         Clock();
@@ -33,18 +34,21 @@ public class GameManager : MonoBehaviour
         if (playersDead == 2) {
             GameLost();
         }
-        if (intensity == 1) {
-            Intensity1SpawnBasic();
-        }
-        if (intensity == 2) {
-            Intensity2SpawnBasic();
-        }if (minutes <= 4) {
-            intensity = 2;
-        }
-        if (minutes <= 0 && seconds <= 0) {
-            minutes = 0;
-            seconds = 0;
-            GameWon();
+        if (spawnEnemies) {
+            if (intensity == 1) {
+                Intensity1SpawnBasic();
+            }
+            if (intensity == 2) {
+                Intensity2SpawnBasic();
+            }
+            if (minutes <= 4) {
+                intensity = 2;
+            }
+            if (minutes <= 0 && seconds <= 0) {
+                minutes = 0;
+                seconds = 0;
+                GameWon();
+            }
         }
     }
 

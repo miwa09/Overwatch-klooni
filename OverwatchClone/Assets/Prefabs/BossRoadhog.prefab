@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileSpeed: 80
   projectileAmount: 25
-  projectilePrefab: {fileID: 3503775909965470399, guid: bcff666e722d9364d9d4776bb686020a,
+  projectilePrefab: {fileID: 3503775909965470399, guid: 4cc4405236146794588023b8bb2930fa,
     type: 3}
   fireRate: 1.5
   reloadTime: 2
@@ -140,8 +140,12 @@ MonoBehaviour:
   gunScript: {fileID: 535064458497254845}
   target: {fileID: 0}
   baseScript: {fileID: 535064458497254847}
+  targetRange: 30
   healPerTick: 5
   healCooldown: 8
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &2658662030137625360
 GameObject:
   m_ObjectHideFlags: 0
@@ -5204,6 +5208,8 @@ MonoBehaviour:
   speed: 40
   range: 20
   damage: 30
+  isMoving: 0
+  hookCD: 0
   target: {fileID: 0}
   hookCooldown: 15
 --- !u!1 &7673510578709677092

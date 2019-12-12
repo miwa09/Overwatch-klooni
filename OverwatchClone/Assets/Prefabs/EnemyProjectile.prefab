@@ -109,7 +109,7 @@ MonoBehaviour:
   velocity: 10
   target: {fileID: 0}
   damage: 25
-  explosionRadius: 2
+  explosionRadius: 3
   explosionDamageMax: 60
   explosionDamageMin: 20
   damageMask:

@@ -30,6 +30,9 @@ public class Enemy : MonoBehaviour, IDamageable {
         {
             hpUI.text = "" + hitpoints;
         }
+        if (hitpoints > maxHitpoints) {
+            hitpoints = maxHitpoints;
+        }
     }
 
     public void EnemyKill()

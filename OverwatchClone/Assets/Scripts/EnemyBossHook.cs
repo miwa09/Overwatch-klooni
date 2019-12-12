@@ -7,15 +7,18 @@ public class EnemyBossHook : MonoBehaviour
     public float speed = 40;
     public float range = 20;
     public float damage = 30;
-    bool isMoving = false;
+    public bool isMoving = false;
     bool isReturning = false;
     Collider hookedPlayer;
     Vector3 targetPos;
     bool hasHooked = false;
-    bool hookCD = false;
+    public bool hookCD = false;
     public Transform target;
     public float hookCooldown = 15;
     float hookTimer = 0;
+    float afterHookTimer = 0;
+    float afterHookTicker = 0.5f;
+    bool releaseOnce = true;
     
     
 
@@ -30,10 +33,18 @@ public class EnemyBossHook : MonoBehaviour
             }
             if (isReturning) {
                 transform.position += (transform.parent.transform.position - transform.position).normalized * speed * Time.deltaTime;
-                if (Vector3.Distance(transform.parent.transform.position, transform.position) < 1) {
-                    isMoving = false;
-                    isReturning = false;
-                    ReturnToNormal();
+                if (Vector3.Distance(transform.parent.transform.position, transform.position) < 1.5) {
+                    afterHookTimer += Time.deltaTime;
+                    if (afterHookTimer >= afterHookTicker) {
+                        afterHookTimer = 0;
+                        isMoving = false;
+                        isReturning = false;
+                        releaseOnce = true;
+                    }
+                    if (releaseOnce) {
+                        ReturnToNormal();
+                        releaseOnce = false;
+                    }
                 }
             }
         }
@@ -48,7 +59,7 @@ public class EnemyBossHook : MonoBehaviour
                 hookCD = false;
             }
         }
-        if (Input.GetKeyDown(KeyCode.G)) {
+        if (Input.GetKeyDown(KeyCode.G)) { //Testing purposes
             Hook();
             hookCD = false;
             hookTimer = 0;
@@ -65,7 +76,7 @@ public class EnemyBossHook : MonoBehaviour
         }
     }
 
-    void Hook() {
+    public void Hook() {
         targetPos = target.position;
         if (!hookCD && target != null) {
             isMoving = true;

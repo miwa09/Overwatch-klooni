@@ -2,31 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBossRoadhog : MonoBehaviour
+public class EnemyBossReaper : MonoBehaviour
 {
-    public EnemyBossHook hookScript;
-    public EnemyBossRoadhogGun gunScript;
+    public EnemyBossReaperGun gunScript;
     public Transform target;
     public Enemy baseScript;
-    float healTimer = 0;
-    float healTicker = 0.01f;
-    float healTimer2 = 0;
-    float healTicker2 = 1;
     public float targetRange = 25;
     public float healPerTick = 3;
-    bool startHealing = false;
-    bool isHealing = false;
-    float totalHealing = 0;
-    public float healCooldown = 8;
-    float healCooldownTimer = 0;
-    bool healCD = false;
+    bool isGhost = false;
+    public float ghostDuration = 3;
+    float ghostDurationTimer = 0;
+    public float ghostCooldown = 8;
+    float lastHitpoints;
+    float ghostCooldownTimer = 0;
+    bool ghostCD = false;
     List<Collider> invisiblePlayers = new List<Collider>();
     List<Collider> playersHit = new List<Collider>();
     public LayerMask groundLayer;
     bool notMoving = true;
+    public Collider[] hitboxes;
+    bool ultOn = false;
+    public float ultRadius = 8;
+    public float ultDamagerPerHit = 34;
+    public int ultDuration = 3;
+    float ultTimer = 0;
+    float ultTicker = 0.25f;
+    int ultTicks = 0;
+    int ultSecondsPassed = 0;
+    public LayerMask playerLayer;
+
     void Start()
     {
-        
+        lastHitpoints = baseScript.hitpoints;
     }
 
     void Update()
@@ -40,85 +47,104 @@ public class EnemyBossRoadhog : MonoBehaviour
             if (notMoving) {
                 transform.forward = (target.position - transform.position).normalized;
             }
-            gunScript.target = target;
-            hookScript.target = target;
-            GoHook();
-            if (Vector3.Distance(transform.position, target.position) < targetRange && !hookScript.isMoving) {
-                gunScript.FireWeapon();
-            }
+            //if (gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn) {
+            //    gunScript.target = target;
+            //    gunScript.FireWeapon();
+            //}
         }
-        if (baseScript.hitpoints <= baseScript.hitpoints / 2) {
-            startHealing = true;
+        GhostMode();
+        if (isGhost) {
+            GhostModeStart();
         }
-        if (startHealing && !healCD) {
-            Heal();
+        if (Input.GetKeyDown(KeyCode.M)){
+            ultOn = true;
         }
-        if (healCD) {
-            healCooldownTimer += Time.deltaTime;
-            if (healCooldownTimer >= healCooldown) {
-                healCooldownTimer = 0;
-                healCD = false;
-            }
+        if (ultOn) {
+            Ultimate();
         }
     }
 
-    void GoHook() {
-        if (!hookScript.hookCD) {
-            if (TargetDistance() < hookScript.range) {
-                hookScript.Hook();
+    void GhostMode() {
+        if (baseScript.hitpoints < lastHitpoints && !ghostCD && !isGhost) {
+            isGhost = true;
+        }
+        if (ghostCD && !isGhost) {
+            ghostCooldownTimer += Time.deltaTime;
+            if (ghostCooldownTimer >= ghostCooldown) {
+                ghostCooldownTimer = 0;
+                ghostCD = false;
             }
         }
     }
-
-    void Heal() {
-        baseScript.roadhogHeal = true;
-        if (!isHealing) {
-            healTimer2 += Time.deltaTime;
-            if (healTimer2 >= healTicker2) {
-                isHealing = true;
-                healTimer2 = 0;
-            }
+    void GhostModeStart() {
+        foreach (Collider hitbox in hitboxes) {
+            hitbox.enabled = false;
         }
-        if (isHealing) {
-            healTimer += Time.deltaTime;
-            while (healTimer >= healTicker) {
-                healTimer -= healTicker;
-                baseScript.hitpoints += healPerTick;
-                totalHealing += healPerTick;
-                if (totalHealing >= 300) {
-                    StopHeal();
-                    return;
-                }
+        ghostDurationTimer += Time.deltaTime;
+        if (ghostDurationTimer >= ghostDuration) {
+            ghostDurationTimer = 0;
+            GhostModeEnd();
+        }
+    }
+    void GhostModeEnd() {
+        isGhost = false;
+        ghostCD = true;
+        foreach (Collider hitbox in hitboxes) {
+            hitbox.enabled = true;
+        }
+    }
+
+    void Ultimate() {
+        //ultOn = true;
+        ultTimer += Time.deltaTime;
+        if (ultTimer >= ultTicker) {
+            ultTimer -= ultTicker;
+            ultTicks++;
+            if (ultTicks >= 4) {
+                ultTicks -= 4;
+                ultSecondsPassed++;
             }
-            healTimer2 += Time.deltaTime;
-            if (healTimer2 >= healTicker2) {
-                StopHeal();
+            if (ultSecondsPassed >= ultDuration) {
+                UltEnd();
                 return;
             }
+            Collider[] ultArea = Physics.OverlapSphere(transform.position, ultRadius, playerLayer);
+            print(ultArea.Length);
+            foreach(Collider player in ultArea) {
+                if (player.tag == "Player") {
+                    player.GetComponent<IDamageable>().TakeDamage(ultDamagerPerHit);
+                }
+            }
         }
+
+    }
+    void UltEnd() {
+        ultOn = false;
+        ultTicks = 0;
+        ultSecondsPassed = 0;
+        ultTimer = 0;
     }
 
-    void StopHeal() {
-        isHealing = false;
-        healTimer = 0;
-        healTimer2 = 0;
-        totalHealing = 0;
-        startHealing = false;
-        baseScript.roadhogHeal = false;
-        healCD = true;
+    public void Lifesteal(float damage) {
+        var lifesteal = damage * 0.4f;
+        baseScript.hitpoints += lifesteal;
+        lastHitpoints = baseScript.hitpoints;
     }
+
+    //Getting and checking the targeted player
     bool HasTarget() {
         if (target != null) {
             return true;
         } else return false;
     }
+
     void CheckTarget() {
         if (target.GetComponent<PlayerHealthManager>().hasDied) {
             target = null;
             playersHit.Clear();
             return;
         }
-        if (Vector3.Distance(transform.position, target.position) > targetRange) {
+        if (TargetDistance() > targetRange) {
             target = null;
             playersHit.Clear();
             return;

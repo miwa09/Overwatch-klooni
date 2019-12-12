@@ -2,38 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyRangedAttack : MonoBehaviour
+public class BossJunkratBomb : MonoBehaviour
 {
     public float velocity = 10;
     Rigidbody rig;
     public Transform target;
-    public float damage = 25;
-    public float explosionRadius = 3;
-    public float explosionDamageMax = 60;
-    public float explosionDamageMin = 20;
+    public float damage = 130;
+    public float explosionRadius = 2;
+    public float explosionDamageMax = 80;
+    public float explosionDamageMin = 10;
     public LayerMask damageMask;
+    int bounce = 0;
 
     private void Start() {
         rig = GetComponent<Rigidbody>();
         rig.AddForce(HitTargetByAngle(transform.position, target.position, Physics.gravity, 45), ForceMode.Impulse);
     }
 
-
-
+    private void Update() {
+        if (bounce >= 2) {
+            Explosion();
+        }
+    }
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag == "Player") {
             collision.gameObject.GetComponent<IDamageable>().TakeDamage(damage);
+            Destroy(gameObject);
+            return;
         }
-        
+        bounce++;
+    }
+
+    private void OnTriggerEnter(Collider other) {
+
+    }
+
+    void Explosion() {
+
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius, damageMask);
         int i = 0;
-
         if (hitColliders.Length > 0) {
             while (i < hitColliders.Length) {
                 float distance = Vector3.Distance(transform.position, hitColliders[i].gameObject.transform.position) - 0.5f;
-                if (distance <= 0) {
+                if (distance < 0) {
                     distance = 0;
                 }
+                print(distance);
                 float explosionDamage = explosionDamageMax / distance;
                 if (explosionDamage <= explosionDamageMin) {
                     explosionDamage = explosionDamageMin;

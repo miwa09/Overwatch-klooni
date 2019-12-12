@@ -53,5 +53,4 @@ public class EnemyBossRoadhogGun : MonoBehaviour
             return;
         }
     }
-    
 }

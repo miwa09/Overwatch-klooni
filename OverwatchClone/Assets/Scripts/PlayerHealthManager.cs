@@ -33,6 +33,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     public Text deathText;
     GameManager gameManager;
     bool sendOnce = true;
+    public bool hasDied = false;
+    bool godMode = false;
 
     bool hasTempArmor() //Check to see if there is temporary armor in play, so we can remove it when it's duration is up
     {
@@ -106,6 +108,12 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         if (health <= 0) {
             PlayerDeath();
         }
+        if (godMode) {
+            health = maxHealth;
+        }
+        if (Input.GetKeyDown(KeyCode.F4)) {
+            godMode = true;
+        }
         //hud.color = Color.red;
         //}
         //print("Base: " + baseArmor + " Perm: " + permArmor + " Temp: " + tempArmor);
@@ -115,6 +123,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
 
     public void TakeDamage(float damage)
     {
+        if (godMode) {
+            return;
+        }
         //print("BEFORE // Health: " + health + " / Temp Armor: " + tempArmor + " Perm Armor: " + permArmor + " Base Armor: " + baseArmor); //For testing purposes
         if (allArmor > 0)
         {
@@ -196,6 +207,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             gameManager.playersDead ++;
             sendOnce = false;
         }
+        hasDied = true;
         health = 0;
         baseArmor = 0;
         permArmor = 0;
@@ -220,6 +232,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         }
     }
     void PlayerRespawn() {
+        hasDied = false;
         gameManager.playersDead--;
         sendOnce = true;
         health = maxHealth;
