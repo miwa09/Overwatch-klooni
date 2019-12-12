@@ -10,22 +10,27 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_Name
-      value: Taulu2
+      value: Taulu2 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0444cae7ad0794049a4f56dfe75d739b, type: 2}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.787
+      value: 10.212
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.577
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.27023
+      value: -1.0692265
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
@@ -70,22 +75,17 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.02
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.02
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.02
+      value: 0.03
       objectReference: {fileID: 0}
-    - target: {fileID: -1504981713932161579, guid: dc7c7d871bc03b9429aa4eb3b63c5016,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 0444cae7ad0794049a4f56dfe75d739b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc7c7d871bc03b9429aa4eb3b63c5016, type: 3}
