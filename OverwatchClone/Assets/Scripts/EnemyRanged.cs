@@ -11,7 +11,6 @@ public class EnemyRanged : MonoBehaviour
     float timer = 0;
     float ticker = 4;
     bool attackCD = true;
-    Rigidbody rig;
     NavMeshAgent ai;
     public LayerMask groundLayer;
     List<Collider> playersHit = new List<Collider>();
@@ -26,13 +25,10 @@ public class EnemyRanged : MonoBehaviour
         if (HasTarget()) {
             transform.forward = (target.position - transform.position).normalized;
             ai.isStopped = true;
-            if (Vector3.Distance(transform.position, target.position) > attackRange) {
-                target = null;
-                playersHit.Clear();
-            }
             if (!attackCD) {
                 ShootProjectile();
             }
+            CheckTarget();
         } if (!HasTarget()) {
             GetTarget();
             ai.isStopped = false;
@@ -44,7 +40,6 @@ public class EnemyRanged : MonoBehaviour
                 attackCD = false;
             }
         }
-        print(invisiblePlayers.Count);
     }
 
     void ShootProjectile() {
@@ -58,14 +53,41 @@ public class EnemyRanged : MonoBehaviour
             return true;
         } else return false;
     }
+
+    void CheckTarget() {
+        if (Vector3.Distance(transform.position, target.position) > attackRange) {
+            target = null;
+            playersHit.Clear();
+            return;
+        }
+        var direction = target.transform.position - transform.position;
+        if (Physics.Raycast(transform.position, direction, attackRange, groundLayer)) {
+            target = null;
+            playersHit.Clear();
+            return;
+        }
+    }
     void GetTarget() {
 
         Collider[] hitList = Physics.OverlapSphere(transform.position, attackRange);
         foreach(Collider player in hitList) {
-            if(player.tag == "Player") {
-                if (Physics.Raycast(transform.position, player.transform.position, attackRange, groundLayer)) {
-                    playersHit.Remove(player);
-                } else playersHit.Add(player);
+            if (player.tag == "Player") {
+                var direction = player.transform.position - transform.position;
+                if (Physics.Raycast(transform.position, direction, attackRange, groundLayer)) {
+                    if (!invisiblePlayers.Contains(player)) {
+                        invisiblePlayers.Add(player);
+                    }
+                    if (playersHit.Contains(player)){
+                        playersHit.Remove(player);
+                    }
+                } else if (invisiblePlayers.Contains(player)) {
+                    invisiblePlayers.Remove(player);
+                }
+            }
+        }
+        foreach(Collider player in hitList) {
+            if (!invisiblePlayers.Contains(player) && !playersHit.Contains(player) && player.tag == "Player") {
+                playersHit.Add(player);
             }
         }
         if (playersHit.Count == 2) {

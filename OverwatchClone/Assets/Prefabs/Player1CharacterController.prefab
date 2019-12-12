@@ -141,7 +141,7 @@ MonoBehaviour:
   cameraLook: {fileID: 2028109175307393695}
   rocketCooldown: 8
   rocketUI: {fileID: 3508932574042143482}
-  ultCharge: 2300
+  ultCharge: 0
   ultChargeMax: 2310
   ultUI: {fileID: 1886759443695263294}
   ultiGunReload: 0.65

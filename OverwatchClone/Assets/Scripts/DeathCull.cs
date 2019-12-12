@@ -25,7 +25,6 @@ public class DeathCull : MonoBehaviour
             {
                 Destroy(cullEnemyScript);
             }
-            gameObject.GetComponent<Rigidbody>().useGravity = false; //So the meshes dont fall the second the culling happens. This will likely be gone sooner than later
             gameObject.transform.position += Vector3.down * Time.deltaTime; //A nice little sinking 'animation'
             Destroy(gameObject, destroyTime); //Destroy evertything once it's out of sight
         }

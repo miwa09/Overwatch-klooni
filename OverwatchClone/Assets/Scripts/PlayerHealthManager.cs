@@ -206,6 +206,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             GetComponent<PlayerAbilitiesSoldier76>().enabled = false;
         }
         GetComponent<PlayerMover>().enabled = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().useGravity = false;
         respawnTimer += Time.deltaTime;
         deathText.text = "You've died!";
         respawnUI.text = "Respawn in: " + (respawnTime - respawnSecsPassed);
@@ -231,5 +233,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             GetComponent<PlayerAbilitiesSoldier76>().enabled = true;
         }
         GetComponent<PlayerMover>().enabled = true;
+        GetComponent<Rigidbody>().useGravity = true;
     }
 }

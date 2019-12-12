@@ -11,14 +11,9 @@ public class Enemy : MonoBehaviour, IDamageable {
     bool lastDamageSourceIsMelee = false;
     public bool indestructible = false;
     public float deathDuration = 5f; //How long the dead corpse stays
-    Rigidbody rig;
     public PlayerIdentifier lastDamageSource;
     public Text hpUI;
 
-    private void Awake()
-    {
-        rig = gameObject.GetComponent<Rigidbody>(); //This was added for simple feedback. Will most likely be gone sooner than later.
-    }
 
     void Update()
     {
@@ -58,10 +53,6 @@ public class Enemy : MonoBehaviour, IDamageable {
         gameObject.GetComponent<DeathCull>().enabled = true;
         gameObject.GetComponent<BasicEnemyMovement>().Death();
         hasDied = true; //So the kill function is only run once
-    }
-    public void DamageKnockback(Vector3 knockbackDirection, float knockbackAmount) //If something requires physical knockback
-    {
-        rig.AddForce(knockbackDirection.normalized * knockbackAmount);
     }
 
     public void EnemyDeathCall(bool melee)

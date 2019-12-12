@@ -151,9 +151,9 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         }
     }
     public void SAbilityUlti() {
-        //if (Input.GetButton(inputPrefix + "AbilityUlt")) {
-        //    UltiStart();
-        //}
+        if (Input.GetButton(inputPrefix + "AbilityUlt")) {
+            UltiStart();
+        }
     }
 
     void SprintStart() {
@@ -269,6 +269,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
 
             }
         }
+        print(enemiesHit.Length);
     }
 
 
