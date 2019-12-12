@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour, IDamageable {
     public float deathDuration = 5f; //How long the dead corpse stays
     public PlayerIdentifier lastDamageSource;
     public Text hpUI;
+    public bool roadhogHeal = false;
 
 
     void Update()
@@ -51,7 +52,9 @@ public class Enemy : MonoBehaviour, IDamageable {
         }
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
-        gameObject.GetComponent<BasicEnemyMovement>().Death();
+        if (gameObject.GetComponent<BasicEnemyMovement>() != null) {
+            gameObject.GetComponent<BasicEnemyMovement>().Death();
+        }
         hasDied = true; //So the kill function is only run once
     }
 
@@ -68,6 +71,10 @@ public class Enemy : MonoBehaviour, IDamageable {
         lastDamageSource = player;
     }
     public void TakeDamage(float damage) {
+        if (roadhogHeal) {
+            hitpoints -= damage / 2;
+            return;
+        } else
         hitpoints -= damage;
     }
 }

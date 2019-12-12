@@ -63,5 +63,6 @@ public class EnemyBossRoadhogProjectile : MonoBehaviour
         float angle = Random.Range(0f, 360f);
         direction = Quaternion.AngleAxis(deviation, Vector3.up) * direction;
         direction = Quaternion.AngleAxis(angle, Vector3.forward) * direction;
+        direction = transform.parent.rotation * direction;
     }
 }

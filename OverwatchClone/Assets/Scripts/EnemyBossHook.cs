@@ -41,7 +41,6 @@ public class EnemyBossHook : MonoBehaviour
             DisableHookedPlayer(hookedPlayer);
             hookedPlayer.transform.position = transform.position;
         }
-        Hook();
         if (hookCD) {
             hookTimer += Time.deltaTime;
             if (hookTimer >= hookCooldown) {
@@ -50,6 +49,7 @@ public class EnemyBossHook : MonoBehaviour
             }
         }
         if (Input.GetKeyDown(KeyCode.G)) {
+            Hook();
             hookCD = false;
             hookTimer = 0;
         }
@@ -60,6 +60,8 @@ public class EnemyBossHook : MonoBehaviour
             isReturning = true;
             hookedPlayer = other;
             hasHooked = true;
+            other.GetComponent<IDamageable>().TakeDamage(damage);
+            return;
         }
     }
 
