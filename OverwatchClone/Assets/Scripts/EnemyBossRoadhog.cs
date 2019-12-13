@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class EnemyBossRoadhog : MonoBehaviour
+public class EnemyBossRoadhog : MonoBehaviour, Iai
 {
     public EnemyBossHook hookScript;
     public EnemyBossRoadhogGun gunScript;
@@ -24,9 +25,10 @@ public class EnemyBossRoadhog : MonoBehaviour
     List<Collider> playersHit = new List<Collider>();
     public LayerMask groundLayer;
     bool notMoving = true;
+    NavMeshAgent agent;
     void Start()
     {
-        
+        agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
@@ -43,7 +45,7 @@ public class EnemyBossRoadhog : MonoBehaviour
             gunScript.target = target;
             hookScript.target = target;
             GoHook();
-            if (Vector3.Distance(transform.position, target.position) < targetRange && !hookScript.isMoving) {
+            if (Vector3.Distance(transform.position, target.position) < targetRange && !hookScript.isMoving && !baseScript.hasDied) {
                 gunScript.FireWeapon();
             }
         }
@@ -174,5 +176,11 @@ public class EnemyBossRoadhog : MonoBehaviour
 
     float TargetDistance() {
         return Vector3.Distance(transform.position, target.position);
+    }
+    public void Death() {
+        if (agent.isActiveAndEnabled) {
+            agent.nextPosition = transform.position;
+            agent.enabled = false;
+        }
     }
 }

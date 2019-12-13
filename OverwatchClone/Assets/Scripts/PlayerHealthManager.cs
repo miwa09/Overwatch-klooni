@@ -239,6 +239,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         baseArmor = baseArmorMax;
         deathText.text = "";
         respawnUI.text = "";
+        respawnSecsPassed = 0;
         GetComponent<Rigidbody>().position = spawnPoint;
         if (GetComponent<PlayerIdentifier>().player == 1) {
             GetComponent<PlayerWeaponRanged>().enabled = true;

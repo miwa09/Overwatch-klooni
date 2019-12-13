@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class EnemyBossReaper : MonoBehaviour
+public class EnemyBossReaper : MonoBehaviour, Iai
 {
     public EnemyBossReaperGun gunScript;
     public Transform target;
@@ -30,10 +31,12 @@ public class EnemyBossReaper : MonoBehaviour
     int ultTicks = 0;
     int ultSecondsPassed = 0;
     public LayerMask playerLayer;
+    NavMeshAgent agent;
 
     void Start()
     {
         lastHitpoints = baseScript.hitpoints;
+        agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
@@ -44,13 +47,13 @@ public class EnemyBossReaper : MonoBehaviour
         }
         if (HasTarget()) {
             CheckTarget();
-            if (notMoving) {
+            if (notMoving && target != null) {
                 transform.forward = (target.position - transform.position).normalized;
             }
-            //if (gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn) {
-            //    gunScript.target = target;
-            //    gunScript.FireWeapon();
-            //}
+            if (gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
+                gunScript.target = target;
+                gunScript.FireWeapon();
+            }
         }
         GhostMode();
         if (isGhost) {
@@ -200,5 +203,12 @@ public class EnemyBossReaper : MonoBehaviour
 
     float TargetDistance() {
         return Vector3.Distance(transform.position, target.position);
+    }
+
+    public void Death() {
+        if (agent.isActiveAndEnabled) {
+            agent.nextPosition = transform.position;
+            agent.enabled = false;
+        }
     }
 }

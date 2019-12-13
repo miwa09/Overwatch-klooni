@@ -43,7 +43,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     float normalGunReload;
     public float ultiGunReload = 0.65f;
     public int ultDuration = 6;
-    public float ultAngle;
+    public float ultAngle = 15;
     public float ultMaxDistance = 50;
     float ultTimer2 = 0;
     float ultTicker2 = 1;
@@ -51,10 +51,10 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     public LayerMask enemyLayer;
     public Vector3 newGunRay;
     public LayerMask groundMask;
-    List<Collider> seenEnemies;
+    List<Collider> seenEnemies = new List<Collider>();
     public Camera playerCamera;
     public GameObject ultInactiveMarker;
-
+    public GameObject testCube;
 
     void Start() {
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
@@ -67,6 +67,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     }
 
     private void Update() {
+        UltiSeekTargets();
         if (canRun) {
             SAbilitySprint();
         }
@@ -236,42 +237,59 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
             gunScript.maxDeviation = normalGunDeviation;
         }
     }
-
     void UltiSeekTargets() {
-        float width = Mathf.Tan(ultAngle) * ultMaxDistance;
-        Vector3 centerPoint = gunScript.gunOffsetPoint.transform.position + gunScript.gunOffsetPoint.transform.forward * (ultMaxDistance / 2);
-        Collider[] enemiesHit = Physics.OverlapBox(centerPoint, new Vector3(width, width), gunScript.gunOffsetPoint.rotation);
-        var invisible = new List<Transform>();
+        float width = Mathf.Tan(Mathf.Deg2Rad * (ultAngle / 2)) * ultMaxDistance;
+        Vector3 centerPoint = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * (ultMaxDistance / 2);
+        DrawUltBorders(centerPoint);
+        Collider[] enemiesHit = Physics.OverlapBox(centerPoint, new Vector3(width, width, ultMaxDistance/2), gunScript.gunOffsetPoint.rotation, enemyLayer);
+        var invisible = new List<Collider>();
         foreach (Collider obj in enemiesHit) {
-            Vector3 hitDirection = gunScript.gunOffsetPoint.transform.position + obj.transform.position;
+            Vector3 hitDirection = obj.transform.position - gunScript.gunOffsetPoint.transform.position;
             Ray ray = new Ray(gunScript.gunOffsetPoint.transform.position, hitDirection);
-            if (Physics.Raycast(ray, ultMaxDistance, groundMask)) { //If the enemy is behind a wall, or too far away, it's invisible
-                if (invisible.Contains(obj.transform)) {
-                    invisible.Add(obj.transform);
+            if (Physics.Raycast(ray, ultMaxDistance, groundMask) && obj.GetComponent<EnemyColliderLocator>().isBody) { //If the enemy is behind a wall, or too far away, it's invisible
+                if (!invisible.Contains(obj)) {
+                    invisible.Add(obj);
                 }
             }
-            if (Vector3.Angle(obj.transform.position, gunScript.gunOffsetPoint.transform.position) > ultAngle) {
-                if (invisible.Contains(obj.transform)) {
-                    invisible.Add(obj.transform);
+            var objDistance = Vector3.Distance(obj.transform.position, gunScript.gunOffsetPoint.position);
+            Vector3 cpDist = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * objDistance;
+            var objPos = obj.transform.position;
+            var camPos = gunScript.gunOffsetPoint.position;
+            //print(Vector3.SignedAngle(obj.transform.position, centerPointDistanced, gunScript.gunOffsetPoint.position));
+            if ((Vector3.SignedAngle(objPos, cpDist, camPos) > 5 || Vector3.SignedAngle(objPos, cpDist, camPos) < -5) && obj.GetComponent<EnemyColliderLocator>().isBody) {
+                if (!invisible.Contains(obj)) {
+                    invisible.Add(obj);
                 }
             }
+            if (obj.GetComponent<EnemyColliderLocator>().isHead) {
+                if (!invisible.Contains(obj)) {
+                    invisible.Add(obj);
+                }
+                
+            }
+
         }
+        print("Hit: " + enemiesHit.Length + " Invisible: " + invisible.Count);
         foreach (Collider obj in enemiesHit) {
-            if (!invisible.Contains(obj.transform)) {
+            if (!invisible.Contains(obj) && !seenEnemies.Contains(obj)) {
                 seenEnemies.Add(obj);
             }
         }
+        //print("Seen: " + seenEnemies.Count + " Invisible: " + invisible.Count);
         if (enemiesHit.Length > 0) {
             foreach (Collider obj in seenEnemies) {
-                Vector3 markerPos = playerCamera.WorldToScreenPoint(obj.transform.position);
-                GameObject markerObj = Instantiate(ultInactiveMarker, markerPos, obj.transform.rotation);
-                markerObj.transform.position = markerPos;
 
             }
         }
-        print(enemiesHit.Length);
     }
 
+    void DrawUltBorders(Vector3 centerPoint) {
+        Debug.DrawRay(gunScript.gunOffsetPoint.position, gunScript.gunOffsetPoint.forward * ultMaxDistance);
+        Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(ultAngle / 2, Vector3.up) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
+        Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(-ultAngle / 2, Vector3.up) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
+        Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(ultAngle / 2, Vector3.right) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
+        Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(-ultAngle / 2, Vector3.right) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
+    }
 
     //bool HealCooldownTracker()
     //{

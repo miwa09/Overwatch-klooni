@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class BossJunkrat : MonoBehaviour
+public class BossJunkrat : MonoBehaviour, Iai
 {
     public Transform target;
+    public Enemy baseScript;
     List<Collider> playersHit = new List<Collider>();
     List<Collider> invisiblePlayers = new List<Collider>();
     public float targetRange = Mathf.Infinity;
@@ -17,6 +19,11 @@ public class BossJunkrat : MonoBehaviour
     public float fireRate = 1f;
     float fireRateTimer = 0;
     public GameObject projectile;
+    NavMeshAgent agent;
+
+    private void Start() {
+        agent = GetComponent<NavMeshAgent>();
+    }
 
     void Update() {
         HasTarget();
@@ -25,8 +32,10 @@ public class BossJunkrat : MonoBehaviour
         }
         if (HasTarget()) {
             CheckTarget();
-            transform.forward = (target.position - transform.position).normalized;
-            if (ammo > 0 && canShoot) {
+            if (target != null) {
+                transform.forward = (target.position - transform.position).normalized;
+            }
+            if (ammo > 0 && canShoot && !baseScript.hasDied) {
                 FireWeapon();
             }
         }
@@ -121,5 +130,11 @@ public class BossJunkrat : MonoBehaviour
 
     float TargetDistance() {
         return Vector3.Distance(transform.position, target.position);
+    }
+    public void Death() {
+        if (agent.isActiveAndEnabled) {
+            agent.nextPosition = transform.position;
+            agent.enabled = false;
+        }
     }
 }

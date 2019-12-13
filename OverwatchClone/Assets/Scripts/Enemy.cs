@@ -55,9 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable {
         }
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
-        if (gameObject.GetComponent<BasicEnemyMovement>() != null) {
-            gameObject.GetComponent<BasicEnemyMovement>().Death();
-        }
+        GetComponent<Iai>().Death();
         hasDied = true; //So the kill function is only run once
     }
 
