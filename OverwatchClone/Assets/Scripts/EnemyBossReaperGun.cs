@@ -22,7 +22,8 @@ public class EnemyBossReaperGun : MonoBehaviour
     public bool canShoot = true;
     public float fireRate = 0.75f;
     float fireRateTimer = 0;
-    RaycastHit hit; 
+    RaycastHit hit;
+    public LayerMask playerLayer;
 
     void Start()
     {
@@ -64,7 +65,7 @@ public class EnemyBossReaperGun : MonoBehaviour
             CalculateDamage();
             RandomizeAngle();
             Debug.DrawRay(transform.position, direction * 100, Color.red, 2);
-            if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity)) //Raycast to see what was hit and where
+            if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, playerLayer)) //Raycast to see what was hit and where
                 {
                 Collider target = hit.collider; //Naming a bunch of variables
                 float distance = hit.distance;
@@ -74,7 +75,7 @@ public class EnemyBossReaperGun : MonoBehaviour
                 {
                     CalculateDamage();
                     target.GetComponent<IDamageable>().TakeDamage(damage);
-                    if (GetComponent<Enemy>().hitpoints < GetComponent<Enemy>().maxHitpoints) {
+                    if (GetComponent<Enemy>().hitpoints<GetComponent<Enemy>().maxHitpoints) {
                         GetComponent<EnemyBossReaper>().Lifesteal(damage);
                     }
                 }

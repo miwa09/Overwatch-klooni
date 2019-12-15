@@ -26,7 +26,7 @@ public class EnemyBossHook : MonoBehaviour
     {
         if (isMoving) {
             if (!isReturning) {
-                transform.position += (targetPos - transform.parent.transform.position).normalized * speed * Time.deltaTime;
+                transform.position += ((targetPos + Vector3.up) - transform.parent.transform.position).normalized * speed * Time.deltaTime;
                 if (Vector3.Distance(transform.parent.transform.position, transform.position) > range) {
                     isReturning = true;
                 }
@@ -89,6 +89,10 @@ public class EnemyBossHook : MonoBehaviour
             player.GetComponent<PlayerWeaponMelee>().enabled = false;
             player.GetComponent<PlayerAbilitiesSoldier76>().enabled = false;
         }
+        if (player.GetComponent<PlayerIdentifier>().player == 2) {
+            player.GetComponentInChildren<PlayerBrigitteMelee>().enabled = false;
+            player.GetComponent<PlayerAbilitiesBrigitte>().enabled = false;
+        }
         player.GetComponent<PlayerMover>().enabled = false;
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.GetComponent<Rigidbody>().useGravity = false;
@@ -99,6 +103,10 @@ public class EnemyBossHook : MonoBehaviour
             player.GetComponent<PlayerWeaponRanged>().enabled = true;
             player.GetComponent<PlayerWeaponMelee>().enabled = true;
             player.GetComponent<PlayerAbilitiesSoldier76>().enabled = true;
+        }
+        if (player.GetComponent<PlayerIdentifier>().player == 2) {
+            player.GetComponentInChildren<PlayerBrigitteMelee>().enabled = true;
+            player.GetComponent<PlayerAbilitiesBrigitte>().enabled = true;
         }
         player.GetComponent<PlayerMover>().enabled = true;
         player.GetComponent<Rigidbody>().useGravity = true;

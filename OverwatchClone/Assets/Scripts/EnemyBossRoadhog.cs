@@ -13,7 +13,7 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
     float healTicker = 0.01f;
     float healTimer2 = 0;
     float healTicker2 = 1;
-    public float targetRange = 25;
+    public float targetRange = 50;
     public float healPerTick = 3;
     bool startHealing = false;
     bool isHealing = false;
@@ -26,6 +26,15 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
     public LayerMask groundLayer;
     bool notMoving = true;
     NavMeshAgent agent;
+    public Transform[] hookpoints;
+    public bool stunned = false;
+
+    //Moving Forward
+    public Transform[] waypoints;
+    int nextForwardWaypoint = 0;
+
+    //Getting close
+    public float distanceToPlayer = 12;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -33,22 +42,47 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
 
     void Update()
     {
-        HasTarget();
-        if (!HasTarget()) {
-            GetTarget();
+        if (stunned) {
+            target = null;
         }
+        if (!stunned) {
+            if (!HasTarget()) {
+                GetTarget();
+                MoveForward();
+            }
+            if (HasTarget()) {
+                CheckTarget();
+                FaceTarget();
+                gunScript.target = target;
+                hookScript.target = target;
+                if (hookScript.hookCD) {
+                    GetCloseToTarget();
+                }
+                if (!hookScript.hookCD) {
+                    GoHook();
+                }
+                if (HasTarget()) {
+                    if (Vector3.Distance(transform.position, target.position) < targetRange / 2 && !hookScript.isMoving && !baseScript.hasDied) {
+                        gunScript.FireWeapon();
+                    }
+                }
+            }
+            BehaviourHeal();
+        }
+    }
+
+    //Behaviour
+
+    void GetCloseToTarget() {
         if (HasTarget()) {
-            CheckTarget();
-            if (notMoving) {
-                transform.forward = (target.position - transform.position).normalized;
-            }
-            gunScript.target = target;
-            hookScript.target = target;
-            GoHook();
-            if (Vector3.Distance(transform.position, target.position) < targetRange && !hookScript.isMoving && !baseScript.hasDied) {
-                gunScript.FireWeapon();
+            agent.destination = target.position;
+            if (TargetDistance() < distanceToPlayer) {
+                agent.destination = transform.position;
             }
         }
+    }
+
+    void BehaviourHeal() {
         if (baseScript.hitpoints <= baseScript.hitpoints / 2) {
             startHealing = true;
         }
@@ -63,14 +97,44 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
             }
         }
     }
-
-    void GoHook() {
-        if (!hookScript.hookCD) {
-            if (TargetDistance() < hookScript.range) {
-                hookScript.Hook();
+    void MoveForward() {
+        if (!HasTarget()) {
+            agent.destination = waypoints[nextForwardWaypoint].position;
+            if (Vector3.Distance(transform.position, waypoints[nextForwardWaypoint].position) < 1 && nextForwardWaypoint < waypoints.Length) {
+                nextForwardWaypoint++;
             }
         }
     }
+
+    void FaceTarget() {
+        if (HasTarget()) {
+            transform.forward = (target.position - transform.position).normalized;
+        }
+    }
+
+    void GoHook() {
+        if (TargetDistance() < hookScript.range && Vector3.Distance(ClosestHookpoint().position, transform.position) < 1) {
+           hookScript.Hook();
+        } else {
+           agent.destination = ClosestHookpoint().position;
+        }
+    }
+
+    Transform ClosestHookpoint() {
+        int closestPointIndex = 0;
+        if (HasTarget()) {
+            for (int i = 0; i < hookpoints.Length - 1; i++) {
+                var distanceA = Vector3.Distance(target.position, hookpoints[i].position);
+                var distanceB = Vector3.Distance(target.position, hookpoints[i + 1].position);
+                if (distanceA > distanceB) {
+                    closestPointIndex = i + 1;
+                }
+                closestPointIndex = i;
+            }
+        }
+        return hookpoints[closestPointIndex];
+    }
+
 
     void Heal() {
         baseScript.roadhogHeal = true;
@@ -117,21 +181,25 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
     void CheckTarget() {
         if (target.GetComponent<PlayerBrigitteShield>() != null) {
             target = target.parent.transform;
+            return;
         }
         if (target.GetComponent<PlayerHealthManager>().hasDied) {
             target = null;
             playersHit.Clear();
+            GetTarget();
             return;
         }
         if (Vector3.Distance(transform.position, target.position) > targetRange) {
             target = null;
             playersHit.Clear();
+            GetTarget();
             return;
         }
         var direction = target.transform.position - transform.position;
-        if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+        if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
             target = null;
             playersHit.Clear();
+            GetTarget();
             return;
         }
     }
@@ -141,7 +209,7 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
         foreach (Collider player in hitList) {
             if (player.tag == "Player") {
                 var direction = player.transform.position - transform.position;
-                if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+                if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
                     if (!invisiblePlayers.Contains(player)) {
                         invisiblePlayers.Add(player);
                     }
@@ -159,26 +227,32 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
             }
         }
         if (playersHit.Count == 2) {
+            print("found two");
             target = MinDistanceTarget(playersHit).transform;
+            return;
         }
         if (playersHit.Count == 1) {
             target = playersHit[0].transform;
+            return;
         }
         if (playersHit.Count == 0) {
             target = null;
+            return;
         }
     }
 
     Collider MinDistanceTarget(List<Collider> list) {
         var distanceA = Vector3.Distance(transform.position, list[0].transform.position);
         var distanceB = Vector3.Distance(transform.position, list[1].transform.position);
-        if (distanceA > distanceB) {
+        if (distanceA < distanceB) {
             return list[0];
         } else return list[1];
     }
 
     float TargetDistance() {
-        return Vector3.Distance(transform.position, target.position);
+        if (HasTarget()) {
+            return Vector3.Distance(transform.position, target.position);
+        } else return Mathf.Infinity;
     }
     public void Death() {
         if (agent.isActiveAndEnabled) {

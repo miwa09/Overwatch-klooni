@@ -121,6 +121,7 @@ MonoBehaviour:
   maxHealth: 200
   health: 0
   tempArmor: 0
+  maxTempArmor: 75
   baseArmorMax: 0
   permArmor: 0
   hud_health: {fileID: 2028109175221788080}
@@ -218,13 +219,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputPrefix: P1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
   playerIdentifier: {fileID: 2028109174535167747}
   playerCamera: {fileID: 2028109175307393696}
   cameraAnimation: {fileID: 2028109176397031844}
   canMelee: 1
   meleeCooldown: 1
   meleeRange: 2.5
-  knockback: 60
+  knockback: 2
   meleeDamage: 30
 --- !u!54 &2028109175546948608
 Rigidbody:
@@ -471,7 +475,7 @@ GameObject:
   - component: {fileID: 2028109175191818350}
   - component: {fileID: 2028109175191818352}
   - component: {fileID: 2028109175191818351}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5959,7 +5963,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 128823
+    m_Bits: 30519
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

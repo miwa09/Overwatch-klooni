@@ -7264,6 +7264,11 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 3072
+  stunned: 0
+  normalMaterial: {fileID: 2100000, guid: f4494877e583b1b4f8646f927f7f0c7c, type: 2}
+  ghostMaterial: {fileID: 2100000, guid: c6c1c156a0e898146a670212e386ee33, type: 2}
+  meshRenderer: {fileID: 2023344249263296234}
+  distanceToTarget: 8
 --- !u!114 &7618971592060497464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7286,6 +7291,9 @@ MonoBehaviour:
   spreadAngle: 20.1
   canShoot: 1
   fireRate: 0.75
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 3072
 --- !u!54 &3422832615109329531
 Rigidbody:
   m_ObjectHideFlags: 0

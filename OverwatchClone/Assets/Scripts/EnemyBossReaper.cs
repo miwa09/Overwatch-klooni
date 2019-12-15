@@ -32,6 +32,21 @@ public class EnemyBossReaper : MonoBehaviour, Iai
     int ultSecondsPassed = 0;
     public LayerMask playerLayer;
     NavMeshAgent agent;
+    public bool stunned = false;
+    public Material normalMaterial;
+    public Material ghostMaterial;
+    public Renderer meshRenderer;
+
+    bool nextToTarget = false;
+    public float distanceToTarget = 8;
+
+    bool hasDirection = false;
+    float strafeTimer = 0;
+    float strafeTicker = 2;
+    int leftOrRight;
+
+    bool canUlt = true;
+    bool inUltRange = false;
 
     void Start()
     {
@@ -41,29 +56,102 @@ public class EnemyBossReaper : MonoBehaviour, Iai
 
     void Update()
     {
-        HasTarget();
-        if (!HasTarget()) {
-            GetTarget();
+        if (stunned) {
+            target = null;
+            ultOn = false;
         }
-        if (HasTarget()) {
-            CheckTarget();
-            if (notMoving && target != null) {
-                transform.forward = (target.position - transform.position).normalized;
+        if (!stunned) {
+            HasTarget();
+            if (!HasTarget()) {
+                GetTarget();
             }
-            if (HasTarget() && gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
-                gunScript.target = target;
-                gunScript.FireWeapon();
+            if (!nextToTarget && !ultOn) {
+                GetCloseToTarget();
+            }
+            if (nextToTarget && !ultOn) {
+                CheckTargetDistance();
+                StrafeTarget();
+                if (canUlt) {
+                    MoveUltimate();
+                }
+            }
+            if (HasTarget()) {
+                CheckTarget();
+                if (target != null) {
+                    transform.forward = (target.position - transform.position).normalized;
+                }
+                //if (HasTarget() && gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
+                //    gunScript.target = target;
+                //    gunScript.FireWeapon();
+                //}
+            }
+            GhostMode();
+            if (isGhost) {
+                GhostModeStart();
+            }
+            if (Input.GetKeyDown(KeyCode.M)) {
+                ultOn = true;
+            }
+            if (ultOn) {
+                Ultimate();
             }
         }
-        GhostMode();
-        if (isGhost) {
-            GhostModeStart();
+    }
+
+    void GetCloseToTarget() {
+        if (target != null) {
+            agent.destination = target.position;
+            if (Vector3.Distance(target.position, transform.position) < distanceToTarget) {
+                nextToTarget = true;
+            }
         }
-        if (Input.GetKeyDown(KeyCode.M)){
-            ultOn = true;
+    }
+
+    void StrafeTarget() {
+        if (!hasDirection) {
+            leftOrRight = Random.Range(1, 3);
+            hasDirection = true;
         }
-        if (ultOn) {
-            Ultimate();
+        if (hasDirection && leftOrRight == 2) {
+            agent.destination = target.position + ((target.position + Vector3.right).normalized * distanceToTarget);
+        }
+        if (hasDirection && leftOrRight == 1) {
+            agent.destination = target.position + ((target.position + Vector3.left).normalized * distanceToTarget);
+        }
+        if (hasDirection) {
+            strafeTimer += Time.deltaTime;
+            if (strafeTimer >= strafeTicker) {
+                strafeTimer = 0;
+                hasDirection = false;
+            }
+        }
+    }
+
+    void MoveUltimate() {
+        if (target != null) {
+            agent.destination = target.position;
+            if (Vector3.Distance(target.position, transform.position) < 3) {
+                if (canUlt) {
+                    ultOn = true;
+                }
+                agent.destination = transform.position;
+            }
+            if (Vector3.Distance(target.position, transform.position) < ultRadius - 1) {
+                inUltRange = true;
+            }
+            if (ultOn && !inUltRange) {
+                agent.destination = transform.position;
+            }
+        }
+    }
+
+    void CheckTargetDistance() {
+        if (Vector3.Distance(target.position, transform.position) < distanceToTarget) {
+            nextToTarget = true;
+        }
+        if (Vector3.Distance(target.position, transform.position) > distanceToTarget) {
+            nextToTarget = false;
+            hasDirection = false;
         }
     }
 
@@ -83,6 +171,7 @@ public class EnemyBossReaper : MonoBehaviour, Iai
         foreach (Collider hitbox in hitboxes) {
             hitbox.enabled = false;
         }
+        meshRenderer.material = ghostMaterial;
         ghostDurationTimer += Time.deltaTime;
         if (ghostDurationTimer >= ghostDuration) {
             ghostDurationTimer = 0;
@@ -92,14 +181,16 @@ public class EnemyBossReaper : MonoBehaviour, Iai
     void GhostModeEnd() {
         isGhost = false;
         ghostCD = true;
+        lastHitpoints = baseScript.hitpoints;
+        meshRenderer.material = normalMaterial;
         foreach (Collider hitbox in hitboxes) {
             hitbox.enabled = true;
         }
     }
 
     void Ultimate() {
-        //ultOn = true;
         ultTimer += Time.deltaTime;
+        canUlt = false;
         if (ultTimer >= ultTicker) {
             ultTimer -= ultTicker;
             ultTicks++;
@@ -156,7 +247,7 @@ public class EnemyBossReaper : MonoBehaviour, Iai
             return;
         }
         var direction = target.transform.position - transform.position;
-        if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+        if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
             target = null;
             playersHit.Clear();
             return;
@@ -168,7 +259,7 @@ public class EnemyBossReaper : MonoBehaviour, Iai
         foreach (Collider player in hitList) {
             if (player.tag == "Player") {
                 var direction = player.transform.position - transform.position;
-                if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+                if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
                     if (!invisiblePlayers.Contains(player)) {
                         invisiblePlayers.Add(player);
                     }

@@ -23,7 +23,7 @@ public class EnemyBossRoadhogProjectile : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Physics.Raycast(transform.position, direction, out hit, direction.magnitude)) {
+        if (Physics.Raycast(transform.position, direction, out hit, direction.magnitude * Time.fixedDeltaTime)) {
             if (hit.collider.tag == "Player") {
                 ProjectileHit(hit.collider);
             } else Destroy(gameObject);

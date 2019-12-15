@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerWeaponMelee : MonoBehaviour
 {
     public string inputPrefix = "P1"; //Let the script know which player is in question
+    public LayerMask enemyLayer;
     public PlayerIdentifier playerIdentifier;
     public Transform playerCamera;
     public CameraAnimationManager cameraAnimation; //For camera animations as you melee
@@ -13,7 +14,7 @@ public class PlayerWeaponMelee : MonoBehaviour
     float meleeTimer = 0f; //Simple timer
     public float meleeCooldown = 1f;
     public float meleeRange = 2.5f;
-    public float knockback = 60f; //Adds a little bit of rigidbody knockback on what you hit. This will likely be obsolete sooner than later.
+    public float knockback = 2f; //Adds a little bit of rigidbody knockback on what you hit. This will likely be obsolete sooner than later.
     public float meleeDamage = 30f; //The base melee damage. Default quick melee is 30
     PlayerWeaponRanged playerWeapon;
 
@@ -51,12 +52,13 @@ public class PlayerWeaponMelee : MonoBehaviour
         }
         if (Input.GetButtonDown(inputPrefix + "Melee") && canMelee) //Get the input for melee
         {
-            Vector3 centerpoint = (playerCamera.position + playerCamera.forward * meleeRange) / 2;
+            Vector3 centerpoint = (playerCamera.position + playerCamera.forward * (meleeRange / 2));
             Vector3 size = new Vector3(meleeRange / 2, meleeRange / 2, meleeRange / 2);
-            Collider[] hitList = Physics.OverlapBox(centerpoint, size, playerCamera.transform.rotation);
+            Collider[] hitList = Physics.OverlapBox(centerpoint, size, playerCamera.rotation, enemyLayer);
             foreach (Collider enemy in hitList) {
-                if (enemy.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
-                    GetComponentInParent<IDamageable>().TakeDamage(meleeDamage);
+                if (enemy.GetComponent<EnemyColliderLocator>().isBody) {
+                    enemy.GetComponentInParent<IDamageable>().TakeDamage(meleeDamage);
+                    enemy.GetComponentInParent<IStunable>().DamageKnockback(enemy.transform.position - playerCamera.position, knockback, 0.4f);
                 }
             }
             playerWeapon.disabled = true; 

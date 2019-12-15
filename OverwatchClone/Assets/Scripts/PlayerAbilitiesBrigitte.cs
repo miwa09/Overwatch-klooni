@@ -381,6 +381,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
         shieldRegenTimer = 0;
         gO_shieldCamera.SetActive(true);
         gO_regularCamera.SetActive(false);
+        GetComponent<PlayerHealthManager>().shield = true;
         if (!ultOn) {
             moveScript.movementSpeed = shieldMoveSpeed;
         }
@@ -404,6 +405,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
     void AbilityShieldEnd() {
         gO_regularCamera.SetActive(true);
         gO_shieldCamera.SetActive(false);
+        GetComponent<PlayerHealthManager>().shield = false;
         moveScript.movementSpeed = normalMoveSpeed;
         gO_shield.SetActive(false);
         playShieldAnimOnce = true;

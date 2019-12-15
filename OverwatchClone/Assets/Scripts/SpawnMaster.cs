@@ -18,10 +18,12 @@ public class SpawnMaster : MonoBehaviour
     public Transform[] spawn1waypoints;
     public Transform[] spawn2waypoints;
     public Transform[] spawn3waypoints;
+    public Transform[] spawn3waypoints2;
     public Transform[] spawn4waypoints;
     public Transform[] spawn5waypoints1;
     public Transform[] spawn5waypoints2;
-    public Transform[] spawn6waypoints;
+    public Transform[] spawn6waypoints1;
+    public Transform[] spawn6waypoints2;
 
 
     public void Spawn1Basic() {

@@ -42,6 +42,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     int healOverTimeDuration;
     bool recevingTempArmor = false;
     float receiveTempArmorAmount;
+    public bool shield;
 
     bool hasTempArmor() //Check to see if there is temporary armor in play, so we can remove it when it's duration is up
     {
@@ -130,7 +131,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
 
     public void TakeDamage(float damage)
     {
-        if (godMode) {
+        if (godMode || shield) {
             return;
         }
         //print("BEFORE // Health: " + health + " / Temp Armor: " + tempArmor + " Perm Armor: " + permArmor + " Base Armor: " + baseArmor); //For testing purposes

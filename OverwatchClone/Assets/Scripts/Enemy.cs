@@ -94,6 +94,17 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
             EnemyKill();
             return;
         }
+        if (isBoss) {
+            if(GetComponent<EnemyBossReaper>() != null) {
+                GetComponent<EnemyBossReaper>().stunned = true;
+            }
+            if (GetComponent<EnemyBossRoadhog>() != null) {
+                GetComponent<EnemyBossRoadhog>().stunned = true;
+            }
+            if (GetComponent<BossJunkrat>() != null) {
+                GetComponent<BossJunkrat>().stunned = true;
+            }
+        }
         agent.isStopped = true;
     }
 
@@ -104,6 +115,17 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         agent.isStopped = false;
         if (GetComponent<BasicEnemyMovement>() != null) {
             GetComponent<BasicEnemyMovement>().GoNextWaypoint();
+        }
+        if (isBoss) {
+            if (GetComponent<EnemyBossReaper>() != null) {
+                GetComponent<EnemyBossReaper>().stunned = false;
+            }
+            if (GetComponent<EnemyBossRoadhog>() != null) {
+                GetComponent<EnemyBossRoadhog>().stunned = false;
+            }
+            if (GetComponent<BossJunkrat>() != null) {
+                GetComponent<BossJunkrat>().stunned = false;
+            }
         }
     }
 

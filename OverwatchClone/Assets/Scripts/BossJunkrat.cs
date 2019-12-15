@@ -20,33 +20,65 @@ public class BossJunkrat : MonoBehaviour, Iai
     float fireRateTimer = 0;
     public GameObject projectile;
     NavMeshAgent agent;
+    public bool stunned = false;
+
+    //Movement
+    public Transform[] waypoints;
+    int nextWayPoint = 0;
+    bool loopingBack = false;
 
     private void Start() {
         agent = GetComponent<NavMeshAgent>();
     }
 
     void Update() {
-        HasTarget();
-        if (!HasTarget()) {
-            GetTarget();
+        if (stunned) {
+            target = null;
         }
-        if (HasTarget()) {
-            CheckTarget();
-            if (target != null) {
-                transform.forward = (target.position - transform.position).normalized;
+        if (!stunned) {
+            if (!HasTarget()) {
+                GetTarget();
+                MoveAround();
             }
-            if (ammo > 0 && canShoot && !baseScript.hasDied) {
-                FireWeapon();
+            if (HasTarget()) {
+                CheckTarget();
+                if (target != null) {
+                    transform.forward = (target.position - transform.position).normalized;
+                }
+                if (ammo > 0 && canShoot && !baseScript.hasDied) {
+                    FireWeapon();
+                }
+            }
+            if (ammo <= 0) {
+                Reload();
+            }
+            if (!canShoot) {
+                fireRateTimer += Time.deltaTime;
+                if (fireRateTimer >= fireRate) {
+                    fireRateTimer -= fireRate;
+                    canShoot = true;
+                }
             }
         }
-        if (ammo <= 0) {
-            Reload();
-        }
-        if (!canShoot) {
-            fireRateTimer += Time.deltaTime;
-            if (fireRateTimer >= fireRate) {
-                fireRateTimer -= fireRate;
-                canShoot = true;
+    }
+
+    void MoveAround() {
+        print(nextWayPoint);
+        if (waypoints.Length > 0) {
+            agent.destination = waypoints[nextWayPoint].position;
+            if (Vector3.Distance(transform.position, waypoints[nextWayPoint].position) < 1) {
+                if (nextWayPoint < waypoints.Length && !loopingBack) {
+                    nextWayPoint++;
+                }
+                if (nextWayPoint == waypoints.Length) {
+                    loopingBack = true;
+                }
+                if (loopingBack && nextWayPoint > 0) {
+                    nextWayPoint--;
+                }
+                if (loopingBack && nextWayPoint == 0) {
+                    loopingBack = false;
+                }
             }
         }
     }
@@ -83,7 +115,7 @@ public class BossJunkrat : MonoBehaviour, Iai
             return;
         }
         var direction = target.transform.position - transform.position;
-        if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+        if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
             target = null;
             playersHit.Clear();
             return;
@@ -95,7 +127,7 @@ public class BossJunkrat : MonoBehaviour, Iai
         foreach (Collider player in hitList) {
             if (player.tag == "Player") {
                 var direction = player.transform.position - transform.position;
-                if (Physics.Raycast(transform.position, direction, targetRange, groundLayer)) {
+                if (Physics.Raycast(transform.position, direction, direction.magnitude, groundLayer)) {
                     if (!invisiblePlayers.Contains(player)) {
                         invisiblePlayers.Add(player);
                     }

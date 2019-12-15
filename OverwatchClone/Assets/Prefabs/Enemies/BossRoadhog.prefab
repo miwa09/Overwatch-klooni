@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7426158172393123421}
   - component: {fileID: 535064458497254846}
   - component: {fileID: 535064458497254845}
+  - component: {fileID: 4627756291781867179}
   m_Layer: 9
   m_Name: BossRoadhog
   m_TagString: Enemy
@@ -37,6 +38,7 @@ Transform:
   - {fileID: 4505343501892645625}
   - {fileID: 2837049788185683402}
   - {fileID: 7673510578419312639}
+  - {fileID: 5176875475094036158}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -61,6 +63,11 @@ MonoBehaviour:
   lastDamageSource: {fileID: 0}
   hpUI: {fileID: 1074071361685180033}
   roadhogHeal: 0
+  isGrounded: 0
+  agent: {fileID: 7426158172393123421}
+  rig: {fileID: 4627756291781867179}
+  stunDisableList: []
+  isBoss: 1
 --- !u!114 &7014617322091069563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,9 +96,9 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535064458497254840}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 1
   m_Speed: 2.8
   m_Acceleration: 8
   avoidancePriority: 50
@@ -100,7 +107,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 3
   m_BaseOffset: 1.25
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -120,12 +127,23 @@ MonoBehaviour:
   gunScript: {fileID: 535064458497254845}
   target: {fileID: 0}
   baseScript: {fileID: 535064458497254847}
-  targetRange: 30
+  targetRange: 50
   healPerTick: 5
   healCooldown: 8
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  hookpoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  distanceToPlayer: 8
 --- !u!114 &535064458497254845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +164,22 @@ MonoBehaviour:
   reloadTime: 2
   maxAmmo: 6
   target: {fileID: 0}
+--- !u!54 &4627756291781867179
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535064458497254840}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &2658662030137625360
 GameObject:
   m_ObjectHideFlags: 0
@@ -5571,7 +5605,7 @@ GameObject:
   m_Component:
   - component: {fileID: 305578707044833800}
   - component: {fileID: 5633247822467131751}
-  - component: {fileID: 9216018935880305461}
+  - component: {fileID: 293493301145971372}
   m_Layer: 9
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -5607,8 +5641,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isHead: 0
   isBody: 1
---- !u!135 &9216018935880305461
-SphereCollider:
+--- !u!65 &293493301145971372
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5618,5 +5652,85 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.25
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.5, y: 2.35, z: 1.5}
+  m_Center: {x: 0, y: 0.075, z: 0}
+--- !u!1001 &1644908021161596861
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 535064458497254844}
+    m_Modifications:
+    - target: {fileID: 7634467306115323401, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_Name
+      value: Grounder
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.135
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8531366046739271290, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: baseScript
+      value: 
+      objectReference: {fileID: 535064458497254847}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 70877af3bb07f5948abaf2d11810c494, type: 3}
+--- !u!4 &5176875475094036158 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+    type: 3}
+  m_PrefabInstance: {fileID: 1644908021161596861}
+  m_PrefabAsset: {fileID: 0}
