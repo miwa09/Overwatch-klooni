@@ -174,8 +174,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.25, y: 1.5, z: 0.5}
-  m_Center: {x: 0, y: 0.125, z: 0}
+  m_Size: {x: 1.25, y: 1.75, z: 0.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4233213991753233723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5313,6 +5313,7 @@ GameObject:
   - component: {fileID: 1570307062754516007}
   - component: {fileID: 1413346593567175169}
   - component: {fileID: 1683934515501801104}
+  - component: {fileID: 2598004260939008586}
   m_Layer: 9
   m_Name: TestEnemy
   m_TagString: Enemy
@@ -5335,6 +5336,7 @@ Transform:
   - {fileID: 8119874169352210004}
   - {fileID: 5337898834345569957}
   - {fileID: 6038497512131197334}
+  - {fileID: 183172203565680535}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5359,6 +5361,11 @@ MonoBehaviour:
   lastDamageSource: {fileID: 0}
   hpUI: {fileID: 8824216915978556125}
   roadhogHeal: 0
+  isGrounded: 0
+  agent: {fileID: 1413346593567175169}
+  rig: {fileID: 2598004260939008586}
+  stunDisableList: []
+  isBoss: 0
 --- !u!114 &1570307062754516007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5418,3 +5425,101 @@ MonoBehaviour:
   waypointTriggerDistance: 1
   doorDamage: 40
   playerDamage: 20
+  stopTime: 0.3
+  isWheel: 0
+--- !u!54 &2598004260939008586
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8358358701931051492}
+  serializedVersion: 2
+  m_Mass: 0.8
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!1001 &6020984873998372500
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8358358701931051488}
+    m_Modifications:
+    - target: {fileID: 7634467306115323401, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_Name
+      value: Grounder
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.798
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8531366046739271290, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: baseScript
+      value: 
+      objectReference: {fileID: 8358358701931051491}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 70877af3bb07f5948abaf2d11810c494, type: 3}
+--- !u!4 &183172203565680535 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
+    type: 3}
+  m_PrefabInstance: {fileID: 6020984873998372500}
+  m_PrefabAsset: {fileID: 0}

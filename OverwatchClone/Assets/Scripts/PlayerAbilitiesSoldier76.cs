@@ -67,7 +67,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     }
 
     private void Update() {
-        UltiSeekTargets();
+        //UltiSeekTargets();
         if (canRun) {
             SAbilitySprint();
         }
@@ -242,36 +242,54 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         Vector3 centerPoint = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * (ultMaxDistance / 2);
         DrawUltBorders(centerPoint);
         Collider[] enemiesHit = Physics.OverlapBox(centerPoint, new Vector3(width, width, ultMaxDistance/2), gunScript.gunOffsetPoint.rotation, enemyLayer);
-        var invisible = new List<Collider>();
+        var invisibleRay = new List<Collider>();
+        var invisibleHead = new List<Collider>();
+        var invisibleAngle = new List<Collider>();
         foreach (Collider obj in enemiesHit) {
             Vector3 hitDirection = obj.transform.position - gunScript.gunOffsetPoint.transform.position;
-            Ray ray = new Ray(gunScript.gunOffsetPoint.transform.position, hitDirection);
+            Ray ray = new Ray(gunScript.gunOffsetPoint.position, hitDirection);
+
             if (Physics.Raycast(ray, ultMaxDistance, groundMask) && obj.GetComponent<EnemyColliderLocator>().isBody) { //If the enemy is behind a wall, or too far away, it's invisible
-                if (!invisible.Contains(obj)) {
-                    invisible.Add(obj);
+                if (!invisibleRay.Contains(obj) && !invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj)) {
+                    invisibleRay.Add(obj);
                 }
             }
             var objDistance = Vector3.Distance(obj.transform.position, gunScript.gunOffsetPoint.position);
             Vector3 cpDist = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * objDistance;
             var objPos = obj.transform.position;
             var camPos = gunScript.gunOffsetPoint.position;
-            //print(Vector3.SignedAngle(obj.transform.position, centerPointDistanced, gunScript.gunOffsetPoint.position));
+            print(Vector3.SignedAngle(objPos, cpDist, camPos));
             if ((Vector3.SignedAngle(objPos, cpDist, camPos) > 5 || Vector3.SignedAngle(objPos, cpDist, camPos) < -5) && obj.GetComponent<EnemyColliderLocator>().isBody) {
-                if (!invisible.Contains(obj)) {
-                    invisible.Add(obj);
+                if (!invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj) && !invisibleRay.Contains(obj)) {
+                    invisibleAngle.Add(obj);
                 }
             }
+            if (invisibleAngle.Contains(obj) && (Vector3.SignedAngle(objPos, cpDist, camPos) < 5 || Vector3.SignedAngle(objPos, cpDist, camPos) > -5)) {
+                invisibleAngle.Remove(obj);
+            }
             if (obj.GetComponent<EnemyColliderLocator>().isHead) {
-                if (!invisible.Contains(obj)) {
-                    invisible.Add(obj);
+                if (!invisibleHead.Contains(obj) && !invisibleRay.Contains(obj) && !invisibleAngle.Contains(obj)) {
+                    invisibleHead.Add(obj);
                 }
                 
             }
+            if (invisibleRay.Contains(obj)) {
+                Debug.DrawRay(gunScript.gunOffsetPoint.position, hitDirection * hitDirection.magnitude, Color.red);
+            }
+            if (invisibleAngle.Contains(obj)) {
+                Debug.DrawRay(gunScript.gunOffsetPoint.position + new Vector3(0,0.2f,0), hitDirection * hitDirection.magnitude, Color.blue);
+            }
+            if (invisibleHead.Contains(obj)) {
+                Debug.DrawRay(gunScript.gunOffsetPoint.position + new Vector3(0, 0.4f, 0), hitDirection * hitDirection.magnitude, Color.yellow);
+            }
+            if (!invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj) && !invisibleRay.Contains(obj)) {
+                Debug.DrawRay(gunScript.gunOffsetPoint.position, hitDirection * hitDirection.magnitude, Color.green);
+            }
 
         }
-        print("Hit: " + enemiesHit.Length + " Invisible: " + invisible.Count);
+        //print("Hit: " + enemiesHit.Length + " Invisible: " + invisibleRay.Count + invisibleHead.Count + invisibleAngle.Count);
         foreach (Collider obj in enemiesHit) {
-            if (!invisible.Contains(obj) && !seenEnemies.Contains(obj)) {
+            if (!invisibleHead.Contains(obj) && !seenEnemies.Contains(obj) && !invisibleAngle.Contains(obj) && !invisibleRay.Contains(obj))  {
                 seenEnemies.Add(obj);
             }
         }

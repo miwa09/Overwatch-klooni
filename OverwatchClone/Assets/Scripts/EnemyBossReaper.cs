@@ -50,7 +50,7 @@ public class EnemyBossReaper : MonoBehaviour, Iai
             if (notMoving && target != null) {
                 transform.forward = (target.position - transform.position).normalized;
             }
-            if (gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
+            if (HasTarget() && gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
                 gunScript.target = target;
                 gunScript.FireWeapon();
             }
@@ -142,6 +142,9 @@ public class EnemyBossReaper : MonoBehaviour, Iai
     }
 
     void CheckTarget() {
+        if (target.GetComponent<PlayerBrigitteShield>() != null) {
+            target = target.parent.transform;
+        }
         if (target.GetComponent<PlayerHealthManager>().hasDied) {
             target = null;
             playersHit.Clear();

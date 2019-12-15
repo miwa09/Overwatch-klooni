@@ -74,6 +74,9 @@ public class BossJunkrat : MonoBehaviour, Iai
     }
 
     void CheckTarget() {
+        if (target.GetComponent<PlayerBrigitteShield>() != null) {
+            target = target.parent.transform;
+        }
         if (target.GetComponent<PlayerHealthManager>().hasDied) {
             target = null;
             playersHit.Clear();

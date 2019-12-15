@@ -52,7 +52,7 @@ public class PlayerWeaponMelee : MonoBehaviour
         if (Input.GetButtonDown(inputPrefix + "Melee") && canMelee) //Get the input for melee
         {
             Vector3 centerpoint = (playerCamera.position + playerCamera.forward * meleeRange) / 2;
-            Vector3 size = new Vector3(meleeRange / 2, meleeRange / 2);
+            Vector3 size = new Vector3(meleeRange / 2, meleeRange / 2, meleeRange / 2);
             Collider[] hitList = Physics.OverlapBox(centerpoint, size, playerCamera.transform.rotation);
             foreach (Collider enemy in hitList) {
                 if (enemy.gameObject.layer == LayerMask.NameToLayer("Enemy")) {

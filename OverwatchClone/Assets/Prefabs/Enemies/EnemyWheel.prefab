@@ -325,6 +325,8 @@ MonoBehaviour:
   waypointTriggerDistance: 1
   doorDamage: 240
   playerDamage: 100
+  stopTime: 0.3
+  isWheel: 1
 --- !u!114 &5169055850963032926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,7 +451,8 @@ Animation:
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: db022d421d48a974cb953acd676ed788, type: 2}
-  m_Animations: []
+  m_Animations:
+  - {fileID: 7400000, guid: db022d421d48a974cb953acd676ed788, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0

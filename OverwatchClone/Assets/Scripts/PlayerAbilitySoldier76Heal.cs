@@ -11,7 +11,7 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
     public float healingAmount = 40;
     public float duration = 5;
     float timer = 0;
-    float ticker = 1f;
+    float ticker = 0.2f;
     float durationTimer = 0;
     bool canHeal = true;
     bool isActive = false;
@@ -51,7 +51,7 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
         if (other.gameObject.tag == "Player") {
             if (canHeal)
         {
-            other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount);
+            other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount / 5);
             canHeal = false;
         }
         if (!canHeal)

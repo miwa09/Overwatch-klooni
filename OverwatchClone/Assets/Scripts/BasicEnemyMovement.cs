@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BasicEnemyMovement : MonoBehaviour, Iai
+
+public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
 {
     public Transform[] waypoints;
     public float waypointTriggerDistance = 1f;
@@ -14,6 +15,11 @@ public class BasicEnemyMovement : MonoBehaviour, Iai
     float explodeTicker = 1;
     public float doorDamage = 40;
     public float playerDamage = 20;
+    float stopTimer = 0;
+    public float stopTime = 0.3f;
+    bool isStopped = false;
+    public bool isWheel = false;
+
 
     public void GoNextWaypoint() {
         if (waypoints.Length < 1) {
@@ -40,6 +46,9 @@ public class BasicEnemyMovement : MonoBehaviour, Iai
                 }
             }
         }
+        if (isStopped) {
+            Stopped();
+        }
     }
 
     void Explode() {
@@ -65,6 +74,24 @@ public class BasicEnemyMovement : MonoBehaviour, Iai
         if (agent.isActiveAndEnabled) {
             agent.nextPosition = transform.position;
             agent.enabled = false;
+        }
+    }
+
+    public void StopMovement() {
+        if (isWheel) {
+            return;
+        }
+        isStopped = true;
+        agent.isStopped = true;
+    }
+
+    void Stopped() {
+        stopTimer += Time.deltaTime;
+        if (stopTimer >= stopTime) {
+            stopTimer = 0;
+            isStopped = false;
+            agent.isStopped = false;
+            return;
         }
     }
 }

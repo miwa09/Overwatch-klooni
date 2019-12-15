@@ -2,18 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour, IDamageable {
+public class Enemy : MonoBehaviour, IDamageable, IStunable {
     public float hitpoints = 100f;
     public float maxHitpoints = 100f;
     public ParticleSystem deathParticles;
     public bool hasDied = false;
-    bool lastDamageSourceIsMelee = false;
     public bool indestructible = false;
     public float deathDuration = 5f; //How long the dead corpse stays
     public PlayerIdentifier lastDamageSource;
     public Text hpUI;
     public bool roadhogHeal = false;
+    public bool isGrounded = false;
+    public NavMeshAgent agent;
+    public Rigidbody rig;
+    public Component[] stunDisableList;
+    public bool isBoss = false;
+    float stunTimer = 0;
+    float stunDuration;
+    bool isStunned = false;
 
 
     void Update()
@@ -28,10 +36,16 @@ public class Enemy : MonoBehaviour, IDamageable {
         }
         if (hpUI != null && !hasDied)
         {
-            hpUI.text = "" + hitpoints;
+            hpUI.text = "" + Mathf.RoundToInt(hitpoints);
         }
         if (hitpoints > maxHitpoints) {
             hitpoints = maxHitpoints;
+        }
+        if (isStunned) {
+            stunTimer += Time.deltaTime;
+            if (stunTimer >= stunDuration && !hasDied) {
+                EndStun();
+            }
         }
     }
 
@@ -39,10 +53,6 @@ public class Enemy : MonoBehaviour, IDamageable {
     {
         hitpoints = 0;
         hpUI.text = "Dead";
-        if (lastDamageSourceIsMelee)
-        {
-            EnemyDeathCall(true);
-        }
         Renderer[] meshes = gameObject.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in meshes) //This is only so there is some feedback while testing
         {
@@ -59,13 +69,6 @@ public class Enemy : MonoBehaviour, IDamageable {
         hasDied = true; //So the kill function is only run once
     }
 
-    public void EnemyDeathCall(bool melee)
-    {
-        if (melee)
-        {
-            lastDamageSource.RemoveEnemyFromQuickMelee(gameObject);
-        }
-    }
 
     public void DamageSource(PlayerIdentifier player)
     {
@@ -78,4 +81,46 @@ public class Enemy : MonoBehaviour, IDamageable {
         } else
         hitpoints -= damage;
     }
+
+    public void Stun(float duration) {
+        StunDisableComponents();
+        stunTimer = 0;
+        stunDuration = duration;
+        isStunned = true;
+    }
+
+    void StunDisableComponents() {
+        if (GetComponent<BasicEnemyMovement>() != null && GetComponent<BasicEnemyMovement>().isWheel) {
+            EnemyKill();
+            return;
+        }
+        agent.isStopped = true;
+    }
+
+    void EndStun() {
+        isStunned = false;
+        stunTimer = 0;
+        stunDuration = 0;
+        agent.isStopped = false;
+        if (GetComponent<BasicEnemyMovement>() != null) {
+            GetComponent<BasicEnemyMovement>().GoNextWaypoint();
+        }
+    }
+
+    public void DamageKnockback(Vector3 direction, float magnitude, float verticalLaunch) {
+        agent.enabled = false;
+        rig.isKinematic = false;
+        rig.AddForce(Vector3.up * verticalLaunch, ForceMode.Impulse);
+        rig.AddForce((direction).normalized * magnitude, ForceMode.Impulse);
+    }
+
+    public void Ground() {
+        isGrounded = true;
+        agent.enabled = true;
+        rig.isKinematic = true;
+        if (!isStunned && !hasDied && GetComponent<BasicEnemyMovement>() != null) {
+            GetComponent<BasicEnemyMovement>().GoNextWaypoint();
+        }
+    }
+
 }

@@ -9,3 +9,12 @@ public interface IDamageable {
 public interface Iai {
     void Death();
 }
+
+public interface IStoppable {
+    void StopMovement();
+}
+
+public interface IStunable {
+    void Stun(float duration);
+    void DamageKnockback(Vector3 direction, float magnitude, float verticalLaunch);
+}

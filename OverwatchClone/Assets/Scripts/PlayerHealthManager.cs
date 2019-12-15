@@ -9,7 +9,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     public float health;
     float healthBeforeHeal; //If you have base armor, this is so we can know how much armor you need after receiving the health you were missing
     public float tempArmor; //Temporary armor. Given through skills, but only for a short amount of time.
-    float maxTempArmor = 75f; //A maximum amount for temporary armor, just so nothing breaks
+    public float maxTempArmor = 75f; //A maximum amount for temporary armor, just so nothing breaks
     //bool hasTempArmor = false; //obsolete
     int tempArmorTicks = 0; //Timed ticks so we can know when to remove the temporary armor.
     int tempArmorMaxTicks; //How long temporary armor lasts
@@ -35,6 +35,13 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     bool sendOnce = true;
     public bool hasDied = false;
     bool godMode = false;
+    bool healingOverTime = false;
+    float healingOverTimeTimer = 0;
+    int healingOverTimeSecsPassed = 0;
+    float healOverTimeAmount;
+    int healOverTimeDuration;
+    bool recevingTempArmor = false;
+    float receiveTempArmorAmount;
 
     bool hasTempArmor() //Check to see if there is temporary armor in play, so we can remove it when it's duration is up
     {
@@ -59,13 +66,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         {
             health = maxHealth;
         }
-        health = Mathf.RoundToInt(health); //Nobody wants to see millions of decimals when they're looking for health. Fast and easy integers are pleasing to the eye.
-        tempArmor = Mathf.RoundToInt(tempArmor);
         if (permArmor >= maxPermArmor) //Similar clamping to permanent armor as health.
         {
             permArmor = maxPermArmor;
         }
-        permArmor = Mathf.RoundToInt(permArmor);
         allArmor = tempArmor + permArmor + baseArmor; //Calculating all the armor for an easier time down below
         timer += Time.deltaTime; //Default timer
         while (timer >= ticker)
@@ -89,20 +93,20 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         //}
         //else
         //{
-        hud_health.text = health + " / " + maxHealth; //Actually drawing the UI elements to say what we want
+        hud_health.text = Mathf.RoundToInt(health) + " / " + maxHealth; //Actually drawing the UI elements to say what we want
         if (baseArmorMax > 0)
         {
-            hud_baseArmor.text = baseArmor + " / " + baseArmorMax;
+            hud_baseArmor.text = Mathf.RoundToInt(baseArmor) + " / " + baseArmorMax;
         }
         else hud_baseArmor.text = "";
         if (tempArmor > 0)
         {
-            hud_tempArmor.text = "" + tempArmor;
+            hud_tempArmor.text = "" + Mathf.RoundToInt(tempArmor);
         }
         else hud_tempArmor.text = "";
         if (permArmor > 0)
         {
-            hud_permArmor.text = "" + permArmor;
+            hud_permArmor.text = "" + Mathf.RoundToInt(permArmor);
         } else hud_permArmor.text = "";
 
         if (health <= 0) {
@@ -113,6 +117,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         }
         if (Input.GetKeyDown(KeyCode.F4)) {
             godMode = true;
+        }
+        if (healingOverTime) {
+            ReceiveHealthOverTime(healOverTimeAmount, healOverTimeDuration);
         }
         //hud.color = Color.red;
         //}
@@ -169,6 +176,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
 
     public void ReceiveHealth(float heal) //A function that other scripts can call out to
     {
+        if (hasDied) {
+            return;
+        }
         healthBeforeHeal = health; //We went over this in the beginning
         health += heal;
         if (health >= maxHealth && baseArmorMax > 0) //if health is at the max already, but the player character has any base armor, that get's healed here, if possible
@@ -183,8 +193,50 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         }
     }
 
-    public void ReceiveTempArmor(float armor, int duration) //A function that other scripts can call out to give out temporary armor. The new duration repeats the old one if it's not shorter than the current one
+    public void StartHealOverTime(float heal, int duration, bool receivingArmor, float armor) {
+        if (!healingOverTime) {
+            healingOverTime = true;
+        } else healingOverTimeSecsPassed = 0;
+        healOverTimeAmount = heal;
+        healOverTimeDuration = duration;
+        recevingTempArmor = receivingArmor;
+        receiveTempArmorAmount = armor;
+        
+    }
+    void ReceiveHealthOverTime(float heal, int duration) {
+        healingOverTimeTimer += Time.deltaTime;
+        if (healingOverTimeTimer >= 0.2f) {
+            ReceiveHealth(heal / duration / 5);
+            healingOverTimeTimer -= 0.2f;
+            healingOverTimeSecsPassed++;
+            if (recevingTempArmor && health >= maxHealth) {
+                ReceiveTempArmor(receiveTempArmorAmount / duration / 5, 5, 75);
+            }
+        }
+        if (healingOverTimeSecsPassed >= duration * 5) {
+            ReceiveHealthOverTimeEnd();
+        }
+    }
+
+    void ReceiveHealthOverTimeEnd() {
+        healingOverTime = false;
+        healingOverTimeTimer = 0;
+        healingOverTimeSecsPassed = 0;
+        healOverTimeAmount = 0;
+        healOverTimeDuration = 0;
+    }
+
+    public void ReceiveTempArmor(float armor, int duration, float maxAmount) //A function that other scripts can call out to give out temporary armor. The new duration repeats the old one if it's not shorter than the current one
     {
+        if (maxTempArmor > maxAmount && tempArmor > maxAmount) {
+            return;
+        }
+        if (maxAmount > maxTempArmor) {
+            maxTempArmor = maxAmount;
+        }
+        if (maxAmount < maxTempArmor && tempArmor <= maxAmount) {
+            maxTempArmor = maxAmount;
+        }
         tempArmor += armor;
         if (tempArmor >= maxTempArmor)
         {
@@ -193,6 +245,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         if (duration > tempArmorTicks)
         {
             tempArmorTicks = 0;
+            tempArmorMaxTicks = duration;
         }
     }
 
