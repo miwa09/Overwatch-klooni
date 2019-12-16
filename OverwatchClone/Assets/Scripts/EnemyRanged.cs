@@ -15,29 +15,33 @@ public class EnemyRanged : MonoBehaviour
     public LayerMask groundLayer;
     List<Collider> playersHit = new List<Collider>();
     List<Collider> invisiblePlayers = new List<Collider>();
+    public Enemy baseScript;
 
     private void Start() {
         ai = GetComponent<NavMeshAgent>();
+        baseScript = GetComponent<Enemy>();
     }
     void Update()
     {
-        HasTarget();
-        if (HasTarget()) {
-            transform.forward = (target.position - transform.position).normalized;
-            ai.isStopped = true;
-            if (!attackCD) {
-                ShootProjectile();
+        if (!baseScript.hasDied) {
+            if (HasTarget()) {
+                transform.forward = (target.position - transform.position).normalized;
+                ai.isStopped = true;
+                if (!attackCD) {
+                    ShootProjectile();
+                }
+                CheckTarget();
             }
-            CheckTarget();
-        } if (!HasTarget()) {
-            GetTarget();
-            ai.isStopped = false;
-        }
-        if (attackCD && HasTarget()) {
-            timer += Time.deltaTime;
-            if (timer >= ticker) {
-                timer = 0;
-                attackCD = false;
+            if (!HasTarget()) {
+                GetTarget();
+                ai.isStopped = false;
+            }
+            if (attackCD && HasTarget()) {
+                timer += Time.deltaTime;
+                if (timer >= ticker) {
+                    timer = 0;
+                    attackCD = false;
+                }
             }
         }
     }

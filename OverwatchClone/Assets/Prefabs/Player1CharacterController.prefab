@@ -132,6 +132,8 @@ MonoBehaviour:
   respawnUI: {fileID: 5704806857691327848}
   deathText: {fileID: 7898818830049988468}
   hasDied: 0
+  shield: 0
+  healSource: {fileID: 0}
 --- !u!114 &2028109174535167999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +165,7 @@ MonoBehaviour:
   trails: {fileID: 2028109175428986923}
   ultOn: 0
   shoot: 0
+  canHeadshot: 1
 --- !u!114 &2028109174535167748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,18 +197,21 @@ MonoBehaviour:
   ultUI: {fileID: 1886759443695263294}
   ultiGunReload: 0.65
   ultDuration: 6
-  ultAngle: 0
-  ultMaxDistance: 0
+  ultAngle: 30
+  ultMaxDistance: 50
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   newGunRay: {x: 0, y: 0, z: 0}
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
-  playerCamera: {fileID: 0}
-  ultInactiveMarker: {fileID: 0}
-  testCube: {fileID: 0}
+    m_Bits: 256
+  playerCamera: {fileID: 2028109176397031840}
+  ultPotentialMarker: {fileID: 5102242591740366334, guid: 0e22eb1a23db5a444a82fa4872c7e66d,
+    type: 3}
+  ultActiveTarget: {fileID: 0}
+  ultActiveTargetMarker: {fileID: 2028109175359954838}
+  canvas: {fileID: 2028109176492708600}
 --- !u!114 &2028109174535167744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputPrefix: P1
   movementSpeed: 8
-  jumpHeight: 1.4
+  jumpHeight: 0.2
   maxVelocityChange: 16
   groundCheck: {fileID: 2028109174956148039}
   groundDistance: 0.2
@@ -5963,7 +5969,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 30519
+    m_Bits: 194359
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -6206,7 +6212,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092897414987345718}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.6}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2028109174535167997}

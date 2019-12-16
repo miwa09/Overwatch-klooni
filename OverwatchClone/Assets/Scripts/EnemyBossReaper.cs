@@ -301,6 +301,7 @@ public class EnemyBossReaper : MonoBehaviour, Iai
 
     public void Death() {
         if (agent.isActiveAndEnabled) {
+            agent.isStopped = false;
             agent.nextPosition = transform.position;
             agent.enabled = false;
         }

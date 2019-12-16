@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8997fad0b95fc9f4ca13ea5c2efd6e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  master: {fileID: 2028109174535167995, guid: ed0ff6aed1eeccf42bc853f850ed88fa, type: 3}
   radiusGraphic: {fileID: 1428121290678684754}
   groundCheck: {fileID: 1428121289591360893}
   groundLayer:

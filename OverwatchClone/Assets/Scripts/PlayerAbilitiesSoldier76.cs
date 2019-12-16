@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
-public class PlayerAbilitiesSoldier76 : MonoBehaviour {
+public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public string inputPrefix = "P1";
     public PlayerIdentifier playerIdentifier;
 
@@ -53,10 +54,15 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
     public LayerMask groundMask;
     List<Collider> seenEnemies = new List<Collider>();
     public Camera playerCamera;
-    public GameObject ultInactiveMarker;
-    public GameObject testCube;
+    public GameObject ultPotentialMarker;
+    List<GameObject> ultPotentialMarkersInactive = new List<GameObject>();
+    List<GameObject> ultPotentialMarkersActive = new List<GameObject>();
+    public Collider ultActiveTarget;
+    public GameObject ultActiveTargetMarker;
+    public Transform canvas;
 
     void Start() {
+        ultCharge = 0;
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
         moveScript = gameObject.GetComponent<PlayerMover>();
         gunScript = gameObject.GetComponent<PlayerWeaponRanged>();
@@ -64,10 +70,14 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         normalGunReload = gunScript.reloadTime;
         runSpeed = moveScript.movementSpeed * sprintSpeedMultiplier;
         baseSpeed = moveScript.movementSpeed;
+        for (int i = 0; i < 30; i++) {
+            var marker = Instantiate(ultPotentialMarker, canvas);
+            ultPotentialMarkersInactive.Add(marker);
+            marker.SetActive(false);
+        }
     }
 
     private void Update() {
-        //UltiSeekTargets();
         if (canRun) {
             SAbilitySprint();
         }
@@ -220,6 +230,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         gunScript.reloadTime = ultiGunReload;
         ultOn = true;
         gunScript.ultOn = true;
+        gunScript.canHeadshot = false;
     }
 
     void UltiActive() {
@@ -235,6 +246,8 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
             ultReady = false;
             gunScript.reloadTime = normalGunReload;
             gunScript.maxDeviation = normalGunDeviation;
+            gunScript.ultOn = false;
+            gunScript.canHeadshot = true;
         }
     }
     void UltiSeekTargets() {
@@ -242,63 +255,83 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         Vector3 centerPoint = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * (ultMaxDistance / 2);
         DrawUltBorders(centerPoint);
         Collider[] enemiesHit = Physics.OverlapBox(centerPoint, new Vector3(width, width, ultMaxDistance/2), gunScript.gunOffsetPoint.rotation, enemyLayer);
-        var invisibleRay = new List<Collider>();
-        var invisibleHead = new List<Collider>();
-        var invisibleAngle = new List<Collider>();
+        var visible = new List<Collider>();
+        var invisible = new List<Collider>();
+
         foreach (Collider obj in enemiesHit) {
             Vector3 hitDirection = obj.transform.position - gunScript.gunOffsetPoint.transform.position;
             Ray ray = new Ray(gunScript.gunOffsetPoint.position, hitDirection);
 
-            if (Physics.Raycast(ray, ultMaxDistance, groundMask) && obj.GetComponent<EnemyColliderLocator>().isBody) { //If the enemy is behind a wall, or too far away, it's invisible
-                if (!invisibleRay.Contains(obj) && !invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj)) {
-                    invisibleRay.Add(obj);
+            if (!Physics.Raycast(ray, Vector3.Distance(transform.position, obj.transform.position), groundMask) && obj.GetComponent<EnemyColliderLocator>().isBody) {
+                if (!visible.Contains(obj)) {
+                    visible.Add(obj);
                 }
             }
-            var objDistance = Vector3.Distance(obj.transform.position, gunScript.gunOffsetPoint.position);
-            Vector3 cpDist = gunScript.gunOffsetPoint.position + gunScript.gunOffsetPoint.forward * objDistance;
-            var objPos = obj.transform.position;
-            var camPos = gunScript.gunOffsetPoint.position;
-            print(Vector3.SignedAngle(objPos, cpDist, camPos));
-            if ((Vector3.SignedAngle(objPos, cpDist, camPos) > 5 || Vector3.SignedAngle(objPos, cpDist, camPos) < -5) && obj.GetComponent<EnemyColliderLocator>().isBody) {
-                if (!invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj) && !invisibleRay.Contains(obj)) {
-                    invisibleAngle.Add(obj);
+            if (Vector3.Angle(playerCamera.transform.forward, obj.transform.position - transform.position) < ultAngle && obj.GetComponent<EnemyColliderLocator>().isBody) {
+                if (!visible.Contains(obj)) {
+                    visible.Add(obj);
                 }
             }
-            if (invisibleAngle.Contains(obj) && (Vector3.SignedAngle(objPos, cpDist, camPos) < 5 || Vector3.SignedAngle(objPos, cpDist, camPos) > -5)) {
-                invisibleAngle.Remove(obj);
-            }
-            if (obj.GetComponent<EnemyColliderLocator>().isHead) {
-                if (!invisibleHead.Contains(obj) && !invisibleRay.Contains(obj) && !invisibleAngle.Contains(obj)) {
-                    invisibleHead.Add(obj);
-                }
-                
-            }
-            if (invisibleRay.Contains(obj)) {
-                Debug.DrawRay(gunScript.gunOffsetPoint.position, hitDirection * hitDirection.magnitude, Color.red);
-            }
-            if (invisibleAngle.Contains(obj)) {
-                Debug.DrawRay(gunScript.gunOffsetPoint.position + new Vector3(0,0.2f,0), hitDirection * hitDirection.magnitude, Color.blue);
-            }
-            if (invisibleHead.Contains(obj)) {
-                Debug.DrawRay(gunScript.gunOffsetPoint.position + new Vector3(0, 0.4f, 0), hitDirection * hitDirection.magnitude, Color.yellow);
-            }
-            if (!invisibleAngle.Contains(obj) && !invisibleHead.Contains(obj) && !invisibleRay.Contains(obj)) {
-                Debug.DrawRay(gunScript.gunOffsetPoint.position, hitDirection * hitDirection.magnitude, Color.green);
-            }
+        }
+        foreach (Collider obj in visible) {
+            Vector3 hitDirection = obj.transform.position - gunScript.gunOffsetPoint.transform.position;
+            Ray ray = new Ray(gunScript.gunOffsetPoint.position, hitDirection);
 
-        }
-        //print("Hit: " + enemiesHit.Length + " Invisible: " + invisibleRay.Count + invisibleHead.Count + invisibleAngle.Count);
-        foreach (Collider obj in enemiesHit) {
-            if (!invisibleHead.Contains(obj) && !seenEnemies.Contains(obj) && !invisibleAngle.Contains(obj) && !invisibleRay.Contains(obj))  {
-                seenEnemies.Add(obj);
+            if (Physics.Raycast(ray, Vector3.Distance(transform.position, obj.transform.position), groundMask) && obj.GetComponent<EnemyColliderLocator>().isBody) {
+                if (!invisible.Contains(obj) && visible.Contains(obj)) {
+                    invisible.Add(obj);
+                }
+            }
+            if (Vector3.Angle(playerCamera.transform.forward, obj.transform.position - transform.position) > ultAngle && obj.GetComponent<EnemyColliderLocator>().isBody) {
+                if (!invisible.Contains(obj) && visible.Contains(obj)) {
+                    invisible.Add(obj);
+                }
             }
         }
-        //print("Seen: " + seenEnemies.Count + " Invisible: " + invisible.Count);
-        if (enemiesHit.Length > 0) {
-            foreach (Collider obj in seenEnemies) {
+        foreach (Collider obj in invisible) {
+            if (visible.Contains(obj)) {
+                visible.Remove(obj);
+            }
+        }
+        print("Hit: " + enemiesHit.Length + " Invisible: " + invisible.Count + " Visible: " + visible.Count);
+        if (visible.Count > 0) {
+            //for (int i = 0; i < visible.Count; i++) {
+            //    ultPotentialMarkersActive.Add(ultPotentialMarkersInactive[i]);
+            //    if (ultPotentialMarkersInactive.Contains(ultPotentialMarkersActive[i])) {
+            //        ultPotentialMarkersInactive.Remove(ultPotentialMarkersActive[i]);
+            //    }
+            //    var markerPos = playerCamera.WorldToScreenPoint(visible[i].transform.position);
+            //    ultPotentialMarkersActive[i].transform.position = markerPos;
+            //    ultPotentialMarkersActive[i].SetActive(true);
+            //}
+            ultActiveTarget = UltFindActiveTarget(visible);
+            newGunRay = ultActiveTarget.transform.position - transform.position;
+            var markerPos = playerCamera.WorldToScreenPoint(ultActiveTarget.transform.position);
+            ultActiveTargetMarker.transform.position = markerPos;
+            ultActiveTargetMarker.SetActive(true);
 
-            }
+        } else {
+            ultActiveTarget = null;
+            ultActiveTargetMarker.SetActive(false);
         }
+        if (ultActiveTarget == null) {
+            gunScript.ultOn = false;
+        }
+        //var min = invisible.Min(c => Vector3.Angle(playerCamera.transform.forward, c.transform.position - transform.position));
+    }
+
+    Collider UltFindActiveTarget(List<Collider> list) {
+        var minAngleIndex = 0;
+        if (list.Count > 1) {
+            for (int i = 0; i < list.Count - 1; i++) {
+                var minAngleA = Vector3.Angle(playerCamera.transform.forward, list[i + 1].transform.position - transform.position);
+                var minAngleB = Vector3.Angle(playerCamera.transform.forward, list[minAngleIndex].transform.position - transform.position);
+                if (minAngleA < minAngleB) {
+                    minAngleIndex = i + 1;
+                }
+            }
+            return list[minAngleIndex];
+        } else return list[0];
     }
 
     void DrawUltBorders(Vector3 centerPoint) {
@@ -307,6 +340,15 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour {
         Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(-ultAngle / 2, Vector3.up) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
         Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(ultAngle / 2, Vector3.right) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
         Debug.DrawRay(gunScript.gunOffsetPoint.position, Quaternion.AngleAxis(-ultAngle / 2, Vector3.right) * gunScript.gunOffsetPoint.forward * ultMaxDistance);
+    }
+
+    public void AddUltCharge(float amount) {
+        if (ultCharge < ultChargeMax) {
+            ultCharge += amount;
+            if (ultCharge >= ultChargeMax) {
+                ultCharge = ultChargeMax;
+            }
+        }
     }
 
     //bool HealCooldownTracker()

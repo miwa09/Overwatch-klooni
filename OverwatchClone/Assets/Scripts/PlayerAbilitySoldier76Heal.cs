@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerAbilitySoldier76Heal : MonoBehaviour
 {
+    public GameObject master;
     public GameObject radiusGraphic;
     public GameObject groundCheck;
     public LayerMask groundLayer;
@@ -51,7 +52,7 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
         if (other.gameObject.tag == "Player") {
             if (canHeal)
         {
-            other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount / 5);
+            other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount / 5, master);
             canHeal = false;
         }
         if (!canHeal)

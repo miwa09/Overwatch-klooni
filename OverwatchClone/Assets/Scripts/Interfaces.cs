@@ -18,3 +18,7 @@ public interface IStunable {
     void Stun(float duration);
     void DamageKnockback(Vector3 direction, float magnitude, float verticalLaunch);
 }
+
+public interface IUltCharge {
+    void AddUltCharge(float amount);
+}

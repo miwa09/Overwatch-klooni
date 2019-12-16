@@ -59,6 +59,7 @@ public class PlayerWeaponMelee : MonoBehaviour
                 if (enemy.GetComponent<EnemyColliderLocator>().isBody) {
                     enemy.GetComponentInParent<IDamageable>().TakeDamage(meleeDamage);
                     enemy.GetComponentInParent<IStunable>().DamageKnockback(enemy.transform.position - playerCamera.position, knockback, 0.4f);
+                    GetComponent<IUltCharge>().AddUltCharge(meleeDamage);
                 }
             }
             playerWeapon.disabled = true; 

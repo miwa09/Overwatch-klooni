@@ -12,13 +12,15 @@ public class PlayerBrigitteMelee : MonoBehaviour
     public Animation meleeAnimation;
     public PlayerAbilitiesBrigitte abilityScript;
     public bool disabled = false;
+    float meleeInput;
 
 
     void Update()
     {
-        if ((Input.GetButton(inputPrefix + "PrimaryFire") || Input.GetButtonDown(inputPrefix + "Melee")) && !disabled){
+        if ((Input.GetButton(inputPrefix + "PrimaryFire") || Input.GetButtonDown(inputPrefix + "Melee") || meleeInput > 0.9f) && !disabled){
             StartMeleeSwing();
         }
+        meleeInput = Input.GetAxis(inputPrefix + "PrimaryFire");
     }
 
     void StartMeleeSwing() {
@@ -38,6 +40,7 @@ public class PlayerBrigitteMelee : MonoBehaviour
             if (!hitOnce.Contains(other.transform.parent.gameObject)) {
                 hitOnce.Add(other.transform.parent.gameObject);
                 other.transform.parent.GetComponent<IDamageable>().TakeDamage(damage);
+                GetComponentInParent<IUltCharge>().AddUltCharge(damage);
                 other.transform.parent.GetComponent<IStunable>().DamageKnockback(other.transform.position - Vector3.right, 3, 0.7f);
                 if (other.transform.parent.GetComponent<BasicEnemyMovement>() != null) {
                     other.transform.parent.GetComponent<IStoppable>().StopMovement();

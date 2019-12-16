@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerAbilitiesBrigitte : MonoBehaviour
+public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
 {
     public string inputPrefix = "P2";
     public bool disabled = false;
@@ -69,6 +69,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
     public Text ui_shield;
     public Text ui_shieldHPInactive;
     public Text ui_shieldHPActive;
+    float shieldInput;
     Color ui_shieldOKColor;
     bool playShieldAnimOnce;
     float normalMoveSpeed;
@@ -91,6 +92,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
     //Shieldbash
     public LayerMask enemyLayer;
     public Text ui_sbability;
+    float shieldBashInput;
     Rigidbody rig;
     public float sbDamage = 5;
     public float sbStunDuration = 0.75f;
@@ -174,10 +176,10 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
         if (whipshotCD) {
             WhipshotCooldown();
         }
-        if (Input.GetButton(inputPrefix + "Ability1") && !shieldBroken && !healRecovery) {
+        if ((Input.GetButton(inputPrefix + "Ability1") && !shieldBroken && !healRecovery) || (shieldInput > 0.9f && !shieldBroken && !healRecovery)) {
             AbilityShield();
         }
-        if (Input.GetButtonUp(inputPrefix + "Ability1") && shieldActive) {
+        if ((Input.GetButtonUp(inputPrefix + "Ability1") && shieldActive) || (shieldInput < 0.9f && shieldActive)) {
             AbilityShieldEnd();
         }
         if (shieldBroken) {
@@ -218,6 +220,8 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
         if (ultDisable) {
             UltRecovery();
         }
+        shieldInput = Input.GetAxis(inputPrefix + "Ability1");
+        shieldBashInput = Input.GetAxis(inputPrefix + "PrimaryFire");
     }
 
     public void AbilityPassive() {
@@ -239,8 +243,8 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
             }
             foreach (Collider player in passiveHealList) {
                 if (player.gameObject == gameObject) {
-                    GetComponent<PlayerHealthManager>().StartHealOverTime(passiveSelfHeal, passiveDuration, false, 0);
-                } else player.GetComponent<PlayerHealthManager>().StartHealOverTime(passiveTeamHeal, passiveDuration, false, 0);
+                    GetComponent<PlayerHealthManager>().StartHealOverTime(passiveSelfHeal, passiveDuration, false, 0, gameObject);
+                } else player.GetComponent<PlayerHealthManager>().StartHealOverTime(passiveTeamHeal, passiveDuration, false, 0, gameObject);
             }
             passiveHealList.Clear();
             passiveCD = true;
@@ -268,7 +272,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
                     overheal = maxTempArmor;
                 }
             }
-            targetHM.StartHealOverTime(healAmount, healDuration, true, overheal);
+            targetHM.StartHealOverTime(healAmount, healDuration, true, overheal, gameObject);
             healRecovery = true;
         }
     }
@@ -314,6 +318,10 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
 
     void HealCheckTarget() {
         var direction = cameraPos.forward;
+        if (healTarget.GetComponentInParent<PlayerHealthManager>().hasDied) {
+            healTarget = null;
+            return;
+        }
         if (!Physics.Raycast(cameraPos.position, direction, out hit, healRange, player1Layer)){
             healTarget = null;
             return;
@@ -447,7 +455,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
 
     //Shield Bash Code
     void AbilityShieldBash() {
-        if(Input.GetButton(inputPrefix + "PrimaryFire") && !sbActive) {
+        if((Input.GetButton(inputPrefix + "PrimaryFire") && !sbActive) || shieldBashInput > 0.9f && !sbActive) {
             sbActive = true;
         }
     }
@@ -476,6 +484,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
         if (hitList.Length > 0) {
             var enemyHit = hitList[0];
             enemyHit.GetComponentInParent<IDamageable>().TakeDamage(sbDamage);
+            AddUltCharge(sbDamage);
             enemyHit.GetComponentInParent<IStunable>().Stun(sbStunDuration);
             enemyHit.GetComponentInParent<IStunable>().DamageKnockback(enemyHit.transform.position - transform.position, 3, 1);
             SbEnd();
@@ -617,6 +626,15 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour
         ShieldUI();
         ShieldBashUI();
         UltimateUI();
+    }
+
+    public void AddUltCharge(float amount) {
+        if (ultCharge < maxUltCharge) {
+            ultCharge += amount;
+            if (ultCharge >= maxUltCharge) {
+                ultCharge = maxUltCharge;
+            }
+        }
     }
 
 }

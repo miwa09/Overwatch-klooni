@@ -12,7 +12,7 @@ public class PlayerMover : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance;
     public float maxAngle = 90f;
-    bool isGrounded;
+    public bool isGrounded;
     public LayerMask groundMask;
     int groundCull;
     Vector3 move = Vector3.zero;
@@ -43,7 +43,7 @@ public class PlayerMover : MonoBehaviour
             rig.useGravity = false;
             rig.velocity = Vector3.zero;
         } else rig.useGravity = true;
-        if (Input.GetButtonDown(inputPrefix + "Jump") && isGrounded) {
+        if (Input.GetButton(inputPrefix + "Jump") && isGrounded) {
             jumped = true;
         }
         if (jumped) {

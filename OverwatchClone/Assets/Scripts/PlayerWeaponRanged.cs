@@ -38,6 +38,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     public bool ultOn;
     PlayerAbilitiesSoldier76 abilityScript;
     public float shoot;
+    public bool canHeadshot = true;
 
     private void Start()
     {
@@ -133,9 +134,12 @@ public class PlayerWeaponRanged : MonoBehaviour
                 }
                 if (targetGameObject.GetComponent<EnemyColliderLocator>().isHead)
                 {
-                    damage = damage * 2;
+                    if (canHeadshot) {
+                        damage = damage * 2;
+                    }
                 }
                 targetGameObject.GetComponentInParent<IDamageable>().TakeDamage(damage);
+                GetComponent<IUltCharge>().AddUltCharge(damage);
                 targetGameObject.GetComponentInParent<Enemy>().lastDamageSource = playerIdentifier;
                 //targetGameObject.GetComponent<Enemy>().TakeDamage(location - gameObject.transform.position, 150f); //Knockback on hit, was more for fun testing than anything else
             }

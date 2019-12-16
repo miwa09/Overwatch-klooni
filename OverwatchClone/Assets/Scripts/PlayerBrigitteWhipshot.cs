@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class PlayerBrigitteWhipshot : MonoBehaviour
 {
+    public GameObject master;
     public PlayerAbilitiesBrigitte abilityScript;
     public LayerMask affectedLayers;
     RaycastHit hit;
@@ -21,6 +22,7 @@ public class PlayerBrigitteWhipshot : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == affectedLayers && !abilityScript.isReturning && damageOnce) {
             other.GetComponentInParent<IDamageable>().TakeDamage(damage);
+            GetComponentInParent<IUltCharge>().AddUltCharge(damage);
             other.GetComponentInParent<IStunable>().DamageKnockback(other.transform.position - transform.parent.transform.position, CalculateKnockback(other.transform.position, transform.parent.transform.position), 3.4f);
             abilityScript.isReturning = true;
         }
@@ -33,6 +35,7 @@ public class PlayerBrigitteWhipshot : MonoBehaviour
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && damageOnce) {
                 damageOnce = false;
                 hit.collider.GetComponentInParent<IDamageable>().TakeDamage(damage);
+                GetComponentInParent<IUltCharge>().AddUltCharge(damage);
                 hit.collider.GetComponentInParent<IStunable>().DamageKnockback(hit.collider.transform.position - transform.parent.transform.position, CalculateKnockback(hit.collider.transform.position, transform.parent.transform.position), 3.4f);
             }
         }

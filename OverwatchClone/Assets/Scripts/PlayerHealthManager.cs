@@ -43,6 +43,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
     bool recevingTempArmor = false;
     float receiveTempArmorAmount;
     public bool shield;
+    public GameObject healSource;
 
     bool hasTempArmor() //Check to see if there is temporary armor in play, so we can remove it when it's duration is up
     {
@@ -120,7 +121,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             godMode = true;
         }
         if (healingOverTime) {
-            ReceiveHealthOverTime(healOverTimeAmount, healOverTimeDuration);
+            ReceiveHealthOverTime(healOverTimeAmount, healOverTimeDuration, healSource);
         }
         //hud.color = Color.red;
         //}
@@ -175,12 +176,19 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         //print("AFTER // Health: " + health + " / Temp Armor: " + tempArmor + " Perm Armor: " + permArmor + " Base Armor: " + baseArmor); //For testing purposes
     }
 
-    public void ReceiveHealth(float heal) //A function that other scripts can call out to
+    public void ReceiveHealth(float heal, GameObject source) //A function that other scripts can call out to
     {
+        healSource = source;
         if (hasDied) {
             return;
         }
         healthBeforeHeal = health; //We went over this in the beginning
+        if (source != null && health < maxHealth) {
+            var healthMissing = maxHealth - health;
+            if (healthMissing > heal) {
+                source.GetComponent<IUltCharge>().AddUltCharge(heal);
+            } else source.GetComponent<IUltCharge>().AddUltCharge(healthMissing);
+        }
         health += heal;
         if (health >= maxHealth && baseArmorMax > 0) //if health is at the max already, but the player character has any base armor, that get's healed here, if possible
         {
@@ -194,7 +202,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         }
     }
 
-    public void StartHealOverTime(float heal, int duration, bool receivingArmor, float armor) {
+    public void StartHealOverTime(float heal, int duration, bool receivingArmor, float armor, GameObject source) {
+        healSource = source;
         if (!healingOverTime) {
             healingOverTime = true;
         } else healingOverTimeSecsPassed = 0;
@@ -204,14 +213,17 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         receiveTempArmorAmount = armor;
         
     }
-    void ReceiveHealthOverTime(float heal, int duration) {
+    void ReceiveHealthOverTime(float heal, int duration, GameObject source) {
         healingOverTimeTimer += Time.deltaTime;
         if (healingOverTimeTimer >= 0.2f) {
-            ReceiveHealth(heal / duration / 5);
+            if (source != null) {
+            }
+            ReceiveHealth(heal / duration / 5, source);
             healingOverTimeTimer -= 0.2f;
             healingOverTimeSecsPassed++;
             if (recevingTempArmor && health >= maxHealth) {
                 ReceiveTempArmor(receiveTempArmorAmount / duration / 5, 5, 75);
+                source.GetComponent<IUltCharge>().AddUltCharge(receiveTempArmorAmount / duration / 5);
             }
         }
         if (healingOverTimeSecsPassed >= duration * 5) {

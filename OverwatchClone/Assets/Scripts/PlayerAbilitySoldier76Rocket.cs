@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerAbilitySoldier76Rocket : MonoBehaviour
 {
+    public GameObject master;
     public float hitDamage;
     public float explosionDamageMax = 80;
     public float explosionRadius = 3;
@@ -12,15 +13,17 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
     Vector3 hit;
     bool damageOnce = true;
 
-    private void Update()
+    private void FixedUpdate()
     {
-        transform.position += transform.forward * Time.deltaTime * speed;
+        transform.position += transform.forward * Time.fixedDeltaTime * speed;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         hit = transform.position;
-        Explode(other.gameObject);
+        if (damageOnce) {
+            Explode(other.gameObject);
+        }
         Destroy(gameObject);
     }
 
@@ -28,7 +31,8 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
     {
         if (obj.layer == LayerMask.NameToLayer("Enemy") && damageOnce)
         {
-            obj.GetComponentInParent<Enemy>().hitpoints -= hitDamage;
+            obj.GetComponentInParent<IDamageable>().TakeDamage(hitDamage);
+            master.GetComponent<IUltCharge>().AddUltCharge(hitDamage);
             damageOnce = false;
         }
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius, damageMask);
@@ -55,6 +59,8 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
                 if (hitColliders[i].gameObject.layer == LayerMask.NameToLayer("Enemy") && hitColliders[i].GetComponent<EnemyColliderLocator>().isBody)
                 {
                     hitColliders[i].gameObject.GetComponentInParent<IDamageable>().TakeDamage(explosionDamage);
+                    hitColliders[i].gameObject.GetComponentInParent<IStunable>().DamageKnockback(hitColliders[i].transform.position - transform.position, 5, 1);
+                    master.GetComponent<IUltCharge>().AddUltCharge(explosionDamage);
                 }
                 if (hitColliders[i].gameObject.tag == "Player")
                 {
