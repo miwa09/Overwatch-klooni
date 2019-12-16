@@ -48,6 +48,9 @@ public class EnemyBossReaper : MonoBehaviour, Iai
     bool canUlt = true;
     bool inUltRange = false;
 
+    List<Transform> waypoints;
+    int nextForwardWaypoint = 0;
+
     void Start()
     {
         lastHitpoints = baseScript.hitpoints;
@@ -94,6 +97,14 @@ public class EnemyBossReaper : MonoBehaviour, Iai
             }
             if (ultOn) {
                 Ultimate();
+            }
+        }
+    }
+    void MoveForward() {
+        if (!HasTarget()) {
+            agent.destination = waypoints[nextForwardWaypoint].position;
+            if (Vector3.Distance(transform.position, waypoints[nextForwardWaypoint].position) < 1 && nextForwardWaypoint < waypoints.Count) {
+                nextForwardWaypoint++;
             }
         }
     }
@@ -305,5 +316,8 @@ public class EnemyBossReaper : MonoBehaviour, Iai
             agent.nextPosition = transform.position;
             agent.enabled = false;
         }
+    }
+    public void AddWaypoints(List<Transform> addedWaypoints) {
+        waypoints = addedWaypoints;
     }
 }

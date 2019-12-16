@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyRangedMovement : MonoBehaviour, Iai
 {
-    public Transform[] waypoints;
+    public List<Transform> waypoints;
     public float waypointTriggerDistance = 1f;
     int nextWaypoint = 0;
     NavMeshAgent agent;
@@ -30,7 +30,7 @@ public class EnemyRangedMovement : MonoBehaviour, Iai
 
         if (gunScript.target == null) {
             if (d < waypointTriggerDistance) {
-                if (nextWaypoint < waypoints.Length - 1) {
+                if (nextWaypoint < waypoints.Count - 1) {
                     nextWaypoint++;
                 } else nextWaypoint--;
                 GoNextWaypoint();
@@ -43,5 +43,8 @@ public class EnemyRangedMovement : MonoBehaviour, Iai
             agent.nextPosition = transform.position;
             agent.enabled = false;
         }
+    }
+    public void AddWaypoints(List<Transform> addedWaypoints) {
+        waypoints = addedWaypoints;
     }
 }

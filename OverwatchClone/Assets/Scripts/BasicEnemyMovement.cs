@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
 {
-    public Transform[] waypoints;
+    public List<Transform> waypoints;
     public float waypointTriggerDistance = 1f;
     int nextWaypoint = 0;
     NavMeshAgent agent;
@@ -22,7 +22,7 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
 
 
     public void GoNextWaypoint() {
-        if (waypoints.Length < 1) {
+        if (waypoints.Count < 1) {
             agent.destination = transform.position;
         }
         agent.destination = waypoints[nextWaypoint].position;
@@ -35,10 +35,10 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
 
     void Update()
     {
-        if (waypoints.Length > 0) {
+        if (waypoints.Count > 0) {
             var d = Vector3.Distance(transform.position, waypoints[nextWaypoint].position);
             if (d < waypointTriggerDistance) {
-                if (nextWaypoint + 1 > waypoints.Length - 1 && !exploded) {
+                if (nextWaypoint + 1 > waypoints.Count - 1 && !exploded) {
                     Explode();
                 } else if (!exploded) {
                     nextWaypoint++;
@@ -93,5 +93,9 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
             agent.isStopped = false;
             return;
         }
+    }
+
+    public void AddWaypoints(List<Transform> addedWaypoints) {
+        waypoints = addedWaypoints;
     }
 }

@@ -30,7 +30,7 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
     public bool stunned = false;
 
     //Moving Forward
-    public Transform[] waypoints;
+    public List<Transform> waypoints;
     int nextForwardWaypoint = 0;
 
     //Getting close
@@ -100,7 +100,7 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
     void MoveForward() {
         if (!HasTarget()) {
             agent.destination = waypoints[nextForwardWaypoint].position;
-            if (Vector3.Distance(transform.position, waypoints[nextForwardWaypoint].position) < 1 && nextForwardWaypoint < waypoints.Length) {
+            if (Vector3.Distance(transform.position, waypoints[nextForwardWaypoint].position) < 1 && nextForwardWaypoint < waypoints.Count) {
                 nextForwardWaypoint++;
             }
         }
@@ -260,5 +260,8 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
             agent.nextPosition = transform.position;
             agent.enabled = false;
         }
+    }
+    public void AddWaypoints(List<Transform> addedWaypoints) {
+        waypoints = addedWaypoints;
     }
 }

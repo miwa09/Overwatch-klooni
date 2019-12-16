@@ -8,6 +8,7 @@ public interface IDamageable {
 
 public interface Iai {
     void Death();
+    void AddWaypoints(List<Transform> addedWaypoints);
 }
 
 public interface IStoppable {

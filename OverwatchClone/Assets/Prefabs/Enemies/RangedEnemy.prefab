@@ -578,14 +578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b634add6a3b767048aba18622f66bffa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  waypoints: []
   waypointTriggerDistance: 1
 --- !u!114 &2829391882170755651
 MonoBehaviour:
@@ -606,6 +599,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  baseScript: {fileID: 0}
 --- !u!54 &765151575851683653
 Rigidbody:
   m_ObjectHideFlags: 0
