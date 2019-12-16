@@ -8,5 +8,8 @@ public class KillTrigger : MonoBehaviour
         if(other.tag == "Player") {
             other.GetComponent<IDamageable>().TakeDamage(999);
         }
+        if(other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+            other.GetComponentInParent<Enemy>().EnemyKill();
+        }
     }
 }
