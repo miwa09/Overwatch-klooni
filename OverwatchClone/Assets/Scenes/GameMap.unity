@@ -7234,6 +7234,11 @@ PrefabInstance:
       propertyPath: m_CullingMask.m_Bits
       value: 194359
       objectReference: {fileID: 0}
+    - target: {fileID: 2028109175428986921, guid: ed0ff6aed1eeccf42bc853f850ed88fa,
+        type: 3}
+      propertyPath: m_Name
+      value: SoldierTrail
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed0ff6aed1eeccf42bc853f850ed88fa, type: 3}
 --- !u!43 &1231106969

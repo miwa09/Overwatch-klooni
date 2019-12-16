@@ -34,7 +34,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     int layer1;
     public int layerMask1 = 10; //Which layer we don't want the raycasting to see, it should always be the layer the player is on
     float currentBurst; //Counts how many shots have been fired in a continuous burst
-    public ParticleSystem trails;
+    public GameObject trails;
     public bool ultOn;
     PlayerAbilitiesSoldier76 abilityScript;
     public float shoot;
@@ -114,8 +114,10 @@ public class PlayerWeaponRanged : MonoBehaviour
             Vector3 location = hit.point;
             GameObject targetGameObject = hit.collider.gameObject;
 
-            trails.transform.forward = hit.point - trails.transform.position; //Tracer
-            trails.Emit(1);
+            var trail = Instantiate(trails, gunOffsetPoint.position, gunOffsetPoint.rotation);
+            trail.transform.forward = gunRayVector; //Tracer
+            trail.GetComponent<ParticleSystem>().Emit(1);
+            Destroy(trail, 1);
 
             if (targetGameObject.layer == LayerMask.NameToLayer("Enemy")) //To check that it's an enemy
             {

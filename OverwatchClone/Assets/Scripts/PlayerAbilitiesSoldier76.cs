@@ -246,6 +246,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             ultReady = false;
             gunScript.reloadTime = normalGunReload;
             gunScript.maxDeviation = normalGunDeviation;
+            ultActiveTargetMarker.SetActive(false);
             gunScript.ultOn = false;
             gunScript.canHeadshot = true;
         }
@@ -304,6 +305,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             //    ultPotentialMarkersActive[i].transform.position = markerPos;
             //    ultPotentialMarkersActive[i].SetActive(true);
             //}
+            gunScript.ultOn = true;
             ultActiveTarget = UltFindActiveTarget(visible);
             newGunRay = ultActiveTarget.transform.position - transform.position;
             var markerPos = playerCamera.WorldToScreenPoint(ultActiveTarget.transform.position);
