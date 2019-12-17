@@ -62,7 +62,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public Transform canvas;
 
     void Start() {
-        ultCharge = 0;
+        ultCharge = 2300;
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
         moveScript = gameObject.GetComponent<PlayerMover>();
         gunScript = gameObject.GetComponent<PlayerWeaponRanged>();

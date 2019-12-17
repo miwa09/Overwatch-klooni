@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     float stunTimer = 0;
     float stunDuration;
     bool isStunned = false;
+    public bool takenDamage = false;
 
 
     void Update()
@@ -78,8 +79,13 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         if (roadhogHeal) {
             hitpoints -= damage / 2;
             return;
-        } else
-        hitpoints -= damage;
+        } else {
+            hitpoints -= damage;
+        }
+        if (!isBoss) {
+            GetComponent<BasicEnemyDamagesounds>().PlaySound();
+        }
+
     }
 
     public void Stun(float duration) {

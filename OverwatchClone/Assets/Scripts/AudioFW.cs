@@ -49,7 +49,7 @@ public class AudioFW : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.F3))
             DebugPrint();
     }
 

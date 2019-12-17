@@ -139,7 +139,9 @@ public class PlayerWeaponRanged : MonoBehaviour
                     if (canHeadshot) {
                         damage = damage * 2;
                     }
-                }
+                    AudioFW.Play("hitmark_head");
+                } else AudioFW.Play("hitmark_small");
+
                 targetGameObject.GetComponentInParent<IDamageable>().TakeDamage(damage);
                 GetComponent<IUltCharge>().AddUltCharge(damage);
                 targetGameObject.GetComponentInParent<Enemy>().lastDamageSource = playerIdentifier;
