@@ -131,10 +131,8 @@ MonoBehaviour:
   fireRate: 1
   projectile: {fileID: 6387412019840373264, guid: 3f1621005f6edf64189cc3e651766211,
     type: 3}
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  stunned: 0
+  waypoints: []
 --- !u!54 &5654483548142901586
 Rigidbody:
   m_ObjectHideFlags: 0

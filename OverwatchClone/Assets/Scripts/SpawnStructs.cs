@@ -11,18 +11,11 @@ public struct SpawnWaveData {
 public struct SingleSpawnData {
     public GameObject prefab;
     public Transform spawnpoint;
+    public List<Transform> waypoints;
 }
 
 
 public class SpawnStructs : MonoBehaviour
 {
     public SpawnWaveData wave;
-
-    void Start() {
-
-    }
-
-    void Update() {
-
-    }
 }

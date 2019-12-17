@@ -23,7 +23,7 @@ public class BossJunkrat : MonoBehaviour, Iai
     public bool stunned = false;
 
     //Movement
-    public Transform[] waypoints;
+    public List<Transform> waypoints;
     int nextWayPoint = 0;
     bool loopingBack = false;
 
@@ -64,13 +64,13 @@ public class BossJunkrat : MonoBehaviour, Iai
 
     void MoveAround() {
         print(nextWayPoint);
-        if (waypoints.Length > 0) {
+        if (waypoints.Count > 0) {
             agent.destination = waypoints[nextWayPoint].position;
             if (Vector3.Distance(transform.position, waypoints[nextWayPoint].position) < 1) {
-                if (nextWayPoint < waypoints.Length && !loopingBack) {
+                if (nextWayPoint < waypoints.Count && !loopingBack) {
                     nextWayPoint++;
                 }
-                if (nextWayPoint == waypoints.Length) {
+                if (nextWayPoint == waypoints.Count) {
                     loopingBack = true;
                 }
                 if (loopingBack && nextWayPoint > 0) {
@@ -171,6 +171,11 @@ public class BossJunkrat : MonoBehaviour, Iai
             agent.isStopped = false;
             agent.nextPosition = transform.position;
             agent.enabled = false;
+        }
+    }
+    public void AddWaypoints(List<Transform> addedWaypoints) {
+        for (int i = 0; i < addedWaypoints.Count; i++) {
+            waypoints.Add(addedWaypoints[i]);
         }
     }
 }
