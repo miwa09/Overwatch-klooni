@@ -20,15 +20,12 @@ public class SpawnMaster : MonoBehaviour
     }
 
     public void SpawnWave(SpawnWaveData wave) {
-        for (int i = 0; i < wave.spawns.Length; i++) {
-            var spawnedEnemy = Instantiate(wave.spawns[i].prefab, wave.spawns[i].spawnpoint.position, wave.spawns[i].spawnpoint.rotation);
-            spawnedEnemy.GetComponent<Iai>().AddWaypoints(wave.spawns[i].waypoints);
+            var spawnedEnemy = Instantiate(wave.spawns[0].prefab, wave.spawns[0].spawnpoint.position, wave.spawns[0].spawnpoint.rotation);
+            spawnedEnemy.GetComponent<Iai>().AddWaypoints(wave.spawns[0].waypoints);
             EnableNavMeshAgent(spawnedEnemy);
-        }
     }
 
     private void Start() {
-        SpawnWave(spawns.wave);
     }
     void EnableNavMeshAgent(GameObject obj) {
         obj.GetComponent<NavMeshAgent>().enabled = true;
