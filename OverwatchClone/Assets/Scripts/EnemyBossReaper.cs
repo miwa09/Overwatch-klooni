@@ -83,18 +83,19 @@ public class EnemyBossReaper : MonoBehaviour, Iai
                 if (target != null) {
                     transform.forward = (target.position - transform.position).normalized;
                 }
-                //if (HasTarget() && gunScript.canShoot && TargetDistance() < targetRange && !isGhost && !ultOn && !baseScript.hasDied) {
-                //    gunScript.target = target;
-                //    gunScript.FireWeapon();
-                //}
+                if (HasTarget() && gunScript.canShoot && TargetDistance() < targetRange / 2 && !isGhost && !ultOn && !baseScript.hasDied) {
+                    gunScript.target = target;
+                    gunScript.FireWeapon();
+                    print("firing");
+                }
             }
             GhostMode();
             if (isGhost) {
                 GhostModeStart();
             }
-            if (Input.GetKeyDown(KeyCode.M)) {
-                ultOn = true;
-            }
+            //if (Input.GetKeyDown(KeyCode.M)) {
+            //    ultOn = true;
+            //}
             if (ultOn) {
                 Ultimate();
             }
@@ -214,7 +215,6 @@ public class EnemyBossReaper : MonoBehaviour, Iai
                 return;
             }
             Collider[] ultArea = Physics.OverlapSphere(transform.position, ultRadius, playerLayer);
-            print(ultArea.Length);
             foreach(Collider player in ultArea) {
                 if (player.tag == "Player") {
                     player.GetComponent<IDamageable>().TakeDamage(ultDamagerPerHit);

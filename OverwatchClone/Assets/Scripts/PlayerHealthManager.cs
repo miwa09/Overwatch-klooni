@@ -111,7 +111,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
             hud_permArmor.text = "" + Mathf.RoundToInt(permArmor);
         } else hud_permArmor.text = "";
 
-        if (health <= 0) {
+        if (health <= 0 || hasDied) {
             PlayerDeath();
         }
         if (godMode) {
@@ -242,7 +242,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
 
     public void ReceiveTempArmor(float armor, int duration, float maxAmount) //A function that other scripts can call out to give out temporary armor. The new duration repeats the old one if it's not shorter than the current one
     {
-        if (maxTempArmor > maxAmount && tempArmor > maxAmount) {
+        if ((maxTempArmor > maxAmount && tempArmor > maxAmount) || hasDied) {
             return;
         }
         if (maxAmount > maxTempArmor) {

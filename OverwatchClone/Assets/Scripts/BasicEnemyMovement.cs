@@ -62,6 +62,7 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
                 Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
                 GameManager gm = FindObjectOfType<GameManager>();
                 gm.doorHP -= doorDamage;
+                AudioFW.Play("explosion");
                 foreach (Collider obj in playersHit) {
                     if (obj.tag == "Player") {
                         obj.GetComponent<IDamageable>().TakeDamage(playerDamage);

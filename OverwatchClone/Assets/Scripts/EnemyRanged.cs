@@ -16,6 +16,7 @@ public class EnemyRanged : MonoBehaviour
     List<Collider> playersHit = new List<Collider>();
     List<Collider> invisiblePlayers = new List<Collider>();
     public Enemy baseScript;
+    public LayerMask playerLayers;
 
     private void Start() {
         ai = GetComponent<NavMeshAgent>();
@@ -83,7 +84,7 @@ public class EnemyRanged : MonoBehaviour
     }
     void GetTarget() {
 
-        Collider[] hitList = Physics.OverlapSphere(transform.position, attackRange);
+        Collider[] hitList = Physics.OverlapSphere(transform.position, attackRange, playerLayers);
         foreach(Collider player in hitList) {
             if (player.tag == "Player") {
                 var direction = player.transform.position - transform.position;

@@ -62,6 +62,7 @@ public class BossJunkratBomb : MonoBehaviour
                 i++;
             }
         }
+        AudioFW.Play("explosion_projectile");
         Destroy(gameObject);
     }
 

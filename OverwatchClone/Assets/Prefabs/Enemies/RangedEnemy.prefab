@@ -724,6 +724,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   baseScript: {fileID: 0}
+  playerLayers:
+    serializedVersion: 2
+    m_Bits: 3072
 --- !u!54 &765151575851683653
 Rigidbody:
   m_ObjectHideFlags: 0

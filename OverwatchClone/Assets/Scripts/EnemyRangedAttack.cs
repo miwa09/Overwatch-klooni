@@ -48,6 +48,7 @@ public class EnemyRangedAttack : MonoBehaviour
                 i++;
             }
         }
+        AudioFW.Play("explosion_projectile");
         Destroy(gameObject);
     }
 

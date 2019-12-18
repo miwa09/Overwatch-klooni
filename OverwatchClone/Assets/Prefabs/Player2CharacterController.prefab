@@ -1604,8 +1604,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputPrefix: P2
-  movementSpeed: 8
-  jumpHeight: 0.2
+  movementSpeed: 5
+  jumpHeight: 1
   maxVelocityChange: 16
   groundCheck: {fileID: 8402668638604889648}
   groundDistance: 0.2

@@ -17,7 +17,7 @@ public class PlayerBrigitteMelee : MonoBehaviour
 
     void Update()
     {
-        if ((Input.GetButton(inputPrefix + "PrimaryFire") || Input.GetButtonDown(inputPrefix + "Melee") || meleeInput > 0.9f) && !disabled){
+        if ((Input.GetButton(inputPrefix + "PrimaryFire") || Input.GetButtonDown(inputPrefix + "Melee") || meleeInput > 0.9f) && !disabled && !GetComponentInParent<PlayerHealthManager>().hasDied){
             StartMeleeSwing();
         }
         meleeInput = Input.GetAxis(inputPrefix + "PrimaryFire");
@@ -30,6 +30,7 @@ public class PlayerBrigitteMelee : MonoBehaviour
 
     public void ActivateMelee() {
         meleeCollider.enabled = true;
+        AudioFW.Play("melee_swing");
     }
 
     public void EndMeleeSwing() {
@@ -43,6 +44,7 @@ public class PlayerBrigitteMelee : MonoBehaviour
             if (!hitOnce.Contains(other.transform.parent.gameObject)) {
                 hitOnce.Add(other.transform.parent.gameObject);
                 other.transform.parent.GetComponent<IDamageable>().TakeDamage(damage);
+                AudioFW.Play("hitmark_small");
                 GetComponentInParent<IUltCharge>().AddUltCharge(damage);
                 other.transform.parent.GetComponent<IStunable>().DamageKnockback(other.transform.position - Vector3.right, 3, 0.7f);
                 if (other.transform.parent.GetComponent<BasicEnemyMovement>() != null) {

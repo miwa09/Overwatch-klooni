@@ -63,7 +63,6 @@ public class PlayerMover : MonoBehaviour
         }
     }
     private void FixedUpdate() {
-        print(rig.velocity.y);
         //rig.MovePosition(rig.position + move * movementSpeed * Time.fixedDeltaTime);
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);  //Checks if the player is on the ground.
             Vector3 inputVelocity = new Vector3(Input.GetAxis(inputPrefix + "Horizontal"), 0, Input.GetAxis(inputPrefix + "Vertical"));

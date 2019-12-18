@@ -23,6 +23,7 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
         hit = transform.position;
         if (damageOnce) {
             Explode(other.gameObject);
+            AudioFW.Play("explosion_projectile");
         }
         Destroy(gameObject);
     }
@@ -65,7 +66,7 @@ public class PlayerAbilitySoldier76Rocket : MonoBehaviour
                 if (hitColliders[i].gameObject.tag == "Player")
                 {
                         hitColliders[i].gameObject.GetComponent<IDamageable>().TakeDamage(explosionDamage/2);
-                    hitColliders[i].gameObject.GetComponent<Rigidbody>().AddExplosionForce(10f, gameObject.transform.position, 3, 0, ForceMode.VelocityChange);
+                    hitColliders[i].gameObject.GetComponent<Rigidbody>().AddExplosionForce(5.5f, gameObject.transform.position, 3, 0, ForceMode.VelocityChange);
                 }
                 i++;
             }

@@ -24,6 +24,7 @@ public class EnemyBossReaperGun : MonoBehaviour
     float fireRateTimer = 0;
     RaycastHit hit;
     public LayerMask playerLayer;
+    public GameObject trails;
 
     void Start()
     {
@@ -64,6 +65,10 @@ public class EnemyBossReaperGun : MonoBehaviour
         for (int i = 0; i < shotPelletCount; i++) {
             CalculateDamage();
             RandomizeAngle();
+            var trail = Instantiate(trails, transform.position, transform.rotation);
+            trail.transform.forward = direction; //Tracer
+            trail.GetComponent<ParticleSystem>().Emit(1);
+            Destroy(trail, 1);
             Debug.DrawRay(transform.position, direction * 100, Color.red, 2);
             if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, playerLayer)) //Raycast to see what was hit and where
                 {

@@ -233,7 +233,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
         if (passiveHealOn && passiveCD) {
             return;
         }
-        if (passiveHealOn && !passiveCD) {
+        if (passiveHealOn && !passiveCD && !GetComponent<PlayerHealthManager>().hasDied) {
             Collider[] hitList = Physics.OverlapSphere(transform.position, passiveRadius);
             foreach (Collider obj in hitList) {
                 if(obj.tag == "Player" && !passiveHealList.Contains(obj)) {
@@ -461,6 +461,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     void AbilityShieldBash() {
         if((Input.GetButton(inputPrefix + "PrimaryFire") && !sbActive) || shieldBashInput > 0.9f && !sbActive) {
             sbActive = true;
+            AudioFW.Play("brig_shieldbash");
         }
     }
 
@@ -513,6 +514,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
         if (Input.GetButtonDown(inputPrefix + "AbilityUlt")) {
             ultOn = true;
             ultDisable = true;
+            AudioFW.Play("brig_ult");
         }
     }
 

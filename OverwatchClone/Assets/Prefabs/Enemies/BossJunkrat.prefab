@@ -65,7 +65,8 @@ MonoBehaviour:
   agent: {fileID: 7944419471065490381}
   rig: {fileID: 5654483548142901586}
   stunDisableList: []
-  isBoss: 0
+  isBoss: 1
+  takenDamage: 0
 --- !u!114 &7500694206015294955
 MonoBehaviour:
   m_ObjectHideFlags: 0

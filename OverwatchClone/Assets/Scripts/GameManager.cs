@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public bool spawnEnemies = true;
     public bool finalStage = false;
     public int bossedDead = 0;
+    bool paused = false;
 
     private void Update() {
         Clock();
@@ -45,6 +46,15 @@ public class GameManager : MonoBehaviour
                 GameWon();
             }
         }
+        if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.M)) && !paused) {
+            GamePause();
+        } else if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.M)) && paused) {
+            Time.timeScale = 1;
+            gameOverUI.text = "";
+            resetUI.text = "";
+            paused = false;
+        }
+
     }
 
     void Clock() {
@@ -92,5 +102,12 @@ public class GameManager : MonoBehaviour
             gameOverUI.text = "";
             resetUI.text = "";
         }
+    }
+
+    void GamePause() {
+        paused = true;
+        Time.timeScale = 0;
+        gameOverUI.text = "Paused!";
+        resetUI.text = "Press 'Start' to continue";
     }
 }
