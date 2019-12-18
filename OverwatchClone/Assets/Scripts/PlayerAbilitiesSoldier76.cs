@@ -24,6 +24,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public int healCooldown = 15;
     int healCooldownCounter = 0;
     public Text healUI;
+    public abilityUI healIcon;
     public GameObject rocketAbilityPrefab;
     float rocketInput = 0f;
     public GameObject cameraLook;
@@ -33,11 +34,12 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public int rocketCooldown = 8;
     int rocketCooldownCounter = 0;
     public Text rocketUI;
+    public abilityUI rocketIcon;
     public float ultCharge = 0;
     public float ultChargeMax = 2310f;
     float ultTimer = 0f;
     float ultTicker = 1f;
-    bool ultReady = false;
+    public bool ultReady = false;
     bool ultOn = false;
     public Text ultUI;
     float normalGunDeviation;
@@ -60,6 +62,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public Collider ultActiveTarget;
     public GameObject ultActiveTargetMarker;
     public Transform canvas;
+    public Image crosshair;
 
     void Start() {
         ultCharge = 0;
@@ -70,11 +73,11 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         normalGunReload = gunScript.reloadTime;
         runSpeed = moveScript.movementSpeed * sprintSpeedMultiplier;
         baseSpeed = moveScript.movementSpeed;
-        for (int i = 0; i < 30; i++) {
-            var marker = Instantiate(ultPotentialMarker, canvas);
-            ultPotentialMarkersInactive.Add(marker);
-            marker.SetActive(false);
-        }
+        //for (int i = 0; i < 30; i++) {
+        //    var marker = Instantiate(ultPotentialMarker, canvas);
+        //    ultPotentialMarkersInactive.Add(marker);
+        //    marker.SetActive(false);
+        //}
     }
 
     private void Update() {
@@ -86,7 +89,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         }
         if (ability3CooldownOn) {
             HealCooldown();
-            healUI.text = "Heal " + healCooldownCounter;
+            healUI.text = "" + healCooldownCounter;
             healUI.color = Color.red;
         }
         if (!ability3CooldownOn) {
@@ -97,10 +100,12 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         }
         if (ability1CooldownOn) {
             RocketCooldown();
-            rocketUI.text = "Rocket " + rocketCooldownCounter;
+            rocketIcon.cooldown = true;
+            rocketUI.text = "" + rocketCooldownCounter;
             rocketUI.color = Color.red;
         }
         if (!ability1CooldownOn) {
+            rocketIcon.cooldown = false;
             rocketUI.text = "Rocket";
             rocketUI.color = Color.white;
             rocketCooldownCounter = rocketCooldown;
@@ -115,14 +120,14 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             if (ultCharge >= ultChargeMax) {
                 ultReady = true;
             }
-            ultUI.text = "" + (Mathf.RoundToInt((ultCharge / ultChargeMax * 100)));
+            ultUI.text = "" + (Mathf.RoundToInt((ultCharge / ultChargeMax * 100)) + "%");
             ultUI.color = Color.white;
         }
         if (ultReady && !ultOn) {
             SAbilityUlti();
-            ultUI.text = "Ultimate";
-            ultUI.color = Color.blue;
         }
+        ultUI.text = "" + Mathf.RoundToInt(ultCharge / ultChargeMax * 100) + "%";
+        ultUI.color = Color.white;
         if (ultOn) {
             UltiActive();
         }
@@ -204,6 +209,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     }
 
     void HealCooldown() {
+        healIcon.cooldown = true;
         ability3CooldownTimer += Time.deltaTime;
         if (ability3CooldownTimer >= ability3CooldownTicker) {
             ability3CooldownTimer -= ability3CooldownTicker;
@@ -244,6 +250,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             ultCharge = 0;
             ultOn = false;
             ultReady = false;
+            crosshair.enabled = true;
             gunScript.reloadTime = normalGunReload;
             gunScript.maxDeviation = normalGunDeviation;
             ultActiveTargetMarker.SetActive(false);
@@ -306,6 +313,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             //    ultPotentialMarkersActive[i].SetActive(true);
             //}
             gunScript.ultOn = true;
+            crosshair.enabled = false;
             ultActiveTarget = UltFindActiveTarget(visible);
             newGunRay = ultActiveTarget.transform.position - transform.position;
             var markerPos = playerCamera.WorldToScreenPoint(ultActiveTarget.transform.position);
@@ -317,6 +325,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             ultActiveTargetMarker.SetActive(false);
         }
         if (ultActiveTarget == null) {
+            crosshair.enabled = true;
             gunScript.ultOn = false;
         }
         //var min = invisible.Min(c => Vector3.Angle(playerCamera.transform.forward, c.transform.position - transform.position));

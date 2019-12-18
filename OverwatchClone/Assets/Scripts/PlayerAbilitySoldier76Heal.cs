@@ -8,6 +8,8 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
     public GameObject radiusGraphic;
     public GameObject groundCheck;
     public LayerMask groundLayer;
+    public float radius;
+    public LayerMask playerLayers;
 
     public float healingAmount = 40;
     public float duration = 5;
@@ -46,24 +48,19 @@ public class PlayerAbilitySoldier76Heal : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-    }
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.tag == "Player") {
-            if (canHeal)
-        {
-            other.gameObject.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount / 5, master);
-            canHeal = false;
+        if (canHeal) {
+            Collider[] healTargets = Physics.OverlapSphere(transform.position, radius, playerLayers);
+            foreach (Collider players in healTargets) {
+                players.GetComponent<PlayerHealthManager>().ReceiveHealth(healingAmount / 5, master);
+                canHeal = false;
+            }
         }
-        if (!canHeal)
-        {
+        if (!canHeal) {
             timer += Time.deltaTime;
-            if (timer >= ticker)
-            {
+            if (timer >= ticker) {
                 timer -= ticker;
                 canHeal = true;
             }
         }
     }
-}
 }

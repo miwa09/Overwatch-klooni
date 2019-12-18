@@ -14,12 +14,16 @@ public class CameraAnimationManager : MonoBehaviour
 
     public void CameraMeleeShake() //Simple function for one animation that can be called through other scripts.
     {
-        camAnimation.Play();
+        camAnimation.Play("Camera_MeleeShake");
     }
 
     public void CameraMeleeDone()
     {
         playerMelee.MeleeDone();
+    }
+
+    public void CameraDamageShake() {
+        camAnimation.Play("Camera_hit");
     }
 
     //private void Update() //To test if it worked

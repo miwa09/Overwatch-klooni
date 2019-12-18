@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     float stunTimer = 0;
     float stunDuration;
     bool isStunned = false;
+    public bool takenDamage = false;
 
 
     void Update()
@@ -53,6 +54,7 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     {
         hitpoints = 0;
         hpUI.text = "Dead";
+        GetComponent<NavMeshAgent>().enabled = false;
         Renderer[] meshes = gameObject.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in meshes) //This is only so there is some feedback while testing
         {
@@ -66,6 +68,13 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
         GetComponent<Iai>().Death();
+        if (isBoss) {
+            GameManager gm = (GameManager)FindObjectOfType(typeof(GameManager));
+            if (gm.finalStage) {
+                gm.bossedDead++;
+            }
+        }
+
         hasDied = true; //So the kill function is only run once
     }
 
@@ -78,8 +87,13 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         if (roadhogHeal) {
             hitpoints -= damage / 2;
             return;
-        } else
-        hitpoints -= damage;
+        } else {
+            hitpoints -= damage;
+        }
+        if (!isBoss) {
+            GetComponent<BasicEnemyDamagesounds>().PlaySound();
+        }
+
     }
 
     public void Stun(float duration) {

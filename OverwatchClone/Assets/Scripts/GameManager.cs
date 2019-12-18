@@ -19,9 +19,10 @@ public class GameManager : MonoBehaviour
     public Text resetUI;
     public Text doorUI;
     public float doorHP = 2000;
-    bool canSpawn = true;
     public int playersDead = 0;
     public bool spawnEnemies = true;
+    public bool finalStage = false;
+    public int bossedDead = 0;
 
     private void Update() {
         Clock();
@@ -34,10 +35,13 @@ public class GameManager : MonoBehaviour
         if (playersDead == 2) {
             GameLost();
         }
-        if (spawnEnemies) {
-            if (minutes <= 0 && seconds <= 0) {
-                minutes = 0;
-                seconds = 0;
+        if (minutes <= 0 && seconds <= 0) {
+            minutes = 0;
+            seconds = 0;
+            finalStage = true;
+        }
+        if (finalStage) {
+            if (bossedDead == 3) {
                 GameWon();
             }
         }
