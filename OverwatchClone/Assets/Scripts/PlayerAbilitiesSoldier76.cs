@@ -24,6 +24,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public int healCooldown = 15;
     int healCooldownCounter = 0;
     public Text healUI;
+    public abilityUI healIcon;
     public GameObject rocketAbilityPrefab;
     float rocketInput = 0f;
     public GameObject cameraLook;
@@ -33,6 +34,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public int rocketCooldown = 8;
     int rocketCooldownCounter = 0;
     public Text rocketUI;
+    public abilityUI rocketIcon;
     public float ultCharge = 0;
     public float ultChargeMax = 2310f;
     float ultTimer = 0f;
@@ -71,11 +73,11 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         normalGunReload = gunScript.reloadTime;
         runSpeed = moveScript.movementSpeed * sprintSpeedMultiplier;
         baseSpeed = moveScript.movementSpeed;
-        for (int i = 0; i < 30; i++) {
-            var marker = Instantiate(ultPotentialMarker, canvas);
-            ultPotentialMarkersInactive.Add(marker);
-            marker.SetActive(false);
-        }
+        //for (int i = 0; i < 30; i++) {
+        //    var marker = Instantiate(ultPotentialMarker, canvas);
+        //    ultPotentialMarkersInactive.Add(marker);
+        //    marker.SetActive(false);
+        //}
     }
 
     private void Update() {
@@ -87,7 +89,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         }
         if (ability3CooldownOn) {
             HealCooldown();
-            healUI.text = "Heal " + healCooldownCounter;
+            healUI.text = "" + healCooldownCounter;
             healUI.color = Color.red;
         }
         if (!ability3CooldownOn) {
@@ -98,10 +100,12 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
         }
         if (ability1CooldownOn) {
             RocketCooldown();
-            rocketUI.text = "Rocket " + rocketCooldownCounter;
+            rocketIcon.cooldown = true;
+            rocketUI.text = "" + rocketCooldownCounter;
             rocketUI.color = Color.red;
         }
         if (!ability1CooldownOn) {
+            rocketIcon.cooldown = false;
             rocketUI.text = "Rocket";
             rocketUI.color = Color.white;
             rocketCooldownCounter = rocketCooldown;
@@ -205,6 +209,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     }
 
     void HealCooldown() {
+        healIcon.cooldown = true;
         ability3CooldownTimer += Time.deltaTime;
         if (ability3CooldownTimer >= ability3CooldownTicker) {
             ability3CooldownTimer -= ability3CooldownTicker;

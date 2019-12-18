@@ -1570,7 +1570,7 @@ MonoBehaviour:
     m_Bits: 256
   playerCamera: {fileID: 8402668639459512790}
   frontCheck: {fileID: 4361876956183089903}
-  footstepInterval: 0
+  footstepInterval: 1.7
 --- !u!114 &5812514753782058104
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,6 +23,8 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     float stunDuration;
     bool isStunned = false;
     public bool takenDamage = false;
+    public Transform hpUIPos;
+    public Camera cam;
 
 
 
@@ -38,6 +40,8 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         }
         if (hpUI != null && !hasDied)
         {
+            var uiPos = cam.WorldToScreenPoint(hpUIPos.position);
+            hpUI.gameObject.transform.position = uiPos;
             hpUI.text = "" + Mathf.RoundToInt(hitpoints);
         }
         if (hitpoints > maxHitpoints) {
