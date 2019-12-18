@@ -15,7 +15,14 @@ public class abilityUI : MonoBehaviour
     public bool cooldown;
     public float cooldownAmount;
     float timer;
+    public bool hasCharges;
+    public int maxChargeAmount;
+    int chargeAmount;
+    bool runOnce;
 
+    private void Start() {
+        chargeAmount = maxChargeAmount;
+    }
     private void Update() {
         if (!disabled && !cooldown) {
             fill.color = regularFill;
@@ -25,7 +32,14 @@ public class abilityUI : MonoBehaviour
             fill.color = disabledFill;
             border.color = disabledBorder;
         }
-        if (cooldown) {
+        if (hasCharges && chargeAmount > maxChargeAmount) {
+            timer += Time.deltaTime;
+            if (timer >= cooldownAmount) {
+                timer += cooldownAmount;
+                chargeAmount++;
+            }
+        }
+        if (cooldown && !hasCharges) {
             disabled = true;
             timer += Time.deltaTime;
             fill.fillAmount = timer / cooldownAmount;
@@ -34,5 +48,10 @@ public class abilityUI : MonoBehaviour
                 cooldown = false;
             }
         }
+    }
+
+    public void UseCharge() {
+        chargeAmount--;
+        cooldown = true;
     }
 }

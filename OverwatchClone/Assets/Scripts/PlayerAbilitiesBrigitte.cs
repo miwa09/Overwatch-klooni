@@ -45,6 +45,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     public float healRecoveryDuration = 0.25f;
     float healRecoveryTimer = 0;
     bool healRecovery = false;
+    public abilityUI healIcon;
 
     //Whipshot
     public GameObject whipshotHitbox;
@@ -263,6 +264,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     }
     void AbilityHeal() {
         if (Input.GetButtonDown(inputPrefix + "Ability3")) {
+            healIcon.UseCharge();
             healCharges--;
             var overheal = 0f;
             var targetHM = healTarget.transform.parent.GetComponent<PlayerHealthManager>();
