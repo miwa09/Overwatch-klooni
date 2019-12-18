@@ -24,9 +24,12 @@ public class PlayerBrigitteMelee : MonoBehaviour
     }
 
     void StartMeleeSwing() {
-        meleeCollider.enabled = true;
         meleeAnimation.Play();
         canSwing = false;
+    }
+
+    public void ActivateMelee() {
+        meleeCollider.enabled = true;
     }
 
     public void EndMeleeSwing() {

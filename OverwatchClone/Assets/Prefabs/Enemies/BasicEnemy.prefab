@@ -5273,7 +5273,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6665957218415807413}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -5360,7 +5360,7 @@ MonoBehaviour:
   indestructible: 0
   deathDuration: 5
   lastDamageSource: {fileID: 0}
-  hpUI: {fileID: 0}
+  hpUI: {fileID: 2178331795153957936}
   roadhogHeal: 0
   isGrounded: 0
   agent: {fileID: 1413346593567175169}
@@ -5465,6 +5465,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8358358701931051488}
     m_Modifications:
+    - target: {fileID: 7634467306115323401, guid: 70877af3bb07f5948abaf2d11810c494,
+        type: 3}
+      propertyPath: m_Name
+      value: Grounder
+      objectReference: {fileID: 0}
     - target: {fileID: 5837817343701305603, guid: 70877af3bb07f5948abaf2d11810c494,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5519,11 +5524,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7634467306115323401, guid: 70877af3bb07f5948abaf2d11810c494,
-        type: 3}
-      propertyPath: m_Name
-      value: Grounder
       objectReference: {fileID: 0}
     - target: {fileID: 8531366046739271290, guid: 70877af3bb07f5948abaf2d11810c494,
         type: 3}
