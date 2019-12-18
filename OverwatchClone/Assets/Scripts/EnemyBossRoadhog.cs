@@ -222,7 +222,7 @@ public class EnemyBossRoadhog : MonoBehaviour, Iai
             }
         }
         foreach (Collider player in hitList) {
-            if (!invisiblePlayers.Contains(player) && !playersHit.Contains(player) && player.tag == "Player") {
+            if (!invisiblePlayers.Contains(player) && !playersHit.Contains(player) && player.tag == "Player" && !player.GetComponent<PlayerHealthManager>().hasDied) {
                 playersHit.Add(player);
             }
         }

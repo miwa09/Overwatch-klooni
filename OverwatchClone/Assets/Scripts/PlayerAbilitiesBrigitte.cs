@@ -60,6 +60,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     public int whipshotCounter = 0;
     bool whipshotCD = false;
     public Text whipshotUI;
+    public abilityUI whipshotIcon;
 
     //Shield
     public PlayerMover moveScript;
@@ -374,6 +375,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     }
 
     void WhipshotCooldown() {
+        whipshotIcon.cooldown = true;
         whipshotTimer += Time.deltaTime;
         if (whipshotTimer >= whipshotTicker) {
             whipshotTimer -= whipshotTicker;
@@ -566,7 +568,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
 
     void WhipshotUI() {
         if (!whipshotCD) {
-            whipshotUI.text = "Whipshot";
+            whipshotUI.text = "Whip";
             whipshotUI.color = Color.white;
         }
         if (whipshotCD) {
