@@ -122,7 +122,7 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     public float ultMaxTempArmor = 100;
     public int ultTempArmorDuration = 30;
     public float ultRadius = 8.5f;
-    bool ultReady = false;
+    public bool ultReady = false;
     bool ultOn = false;
     float ultShieldMoveSpeed;
     public float ultRecoveryDuration = 0.7f;
@@ -610,14 +610,8 @@ public class PlayerAbilitiesBrigitte : MonoBehaviour, IUltCharge
     }
 
     void UltimateUI() {
-        if (!ultReady) {
-            ui_ult.text = "" + Mathf.RoundToInt((ultCharge / maxUltCharge) * 100);
-            ui_ult.color = Color.white;
-        }
-        if (ultReady) {
-            ui_ult.text = "Ultimate";
-            ui_ult.color = Color.blue;
-        }
+        ui_ult.text = "" + Mathf.RoundToInt((ultCharge / maxUltCharge) * 100) + "%";
+        ui_ult.color = Color.white;
     }
 
     void UI() {

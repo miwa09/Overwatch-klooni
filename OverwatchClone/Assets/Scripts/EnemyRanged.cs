@@ -10,7 +10,7 @@ public class EnemyRanged : MonoBehaviour
     public float attackRange = 40;
     float timer = 0;
     float ticker = 4;
-    bool attackCD = true;
+    bool attackCD = false;
     NavMeshAgent ai;
     public LayerMask groundLayer;
     List<Collider> playersHit = new List<Collider>();
@@ -26,7 +26,9 @@ public class EnemyRanged : MonoBehaviour
         if (!baseScript.hasDied) {
             if (HasTarget()) {
                 transform.forward = (target.position - transform.position).normalized;
-                ai.isStopped = true;
+                if (GetComponent<EnemyRangedMovement>().nextWaypoint > 0) {
+                    ai.isStopped = true;
+                }
                 if (!attackCD) {
                     ShootProjectile();
                 }

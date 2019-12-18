@@ -135,6 +135,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable {
         if (godMode || shield) {
             return;
         }
+        GetComponentInChildren<CameraAnimationManager>().CameraDamageShake();
         //print("BEFORE // Health: " + health + " / Temp Armor: " + tempArmor + " Perm Armor: " + permArmor + " Base Armor: " + baseArmor); //For testing purposes
         if (allArmor > 0)
         {

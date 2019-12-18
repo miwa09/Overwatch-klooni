@@ -81,7 +81,7 @@ public class PlayerWeaponRanged : MonoBehaviour
             currentDeviation = 0;
             abilitiesScript.canRun = true;
         }
-        if (Input.GetButtonDown(inputPrefix + "Reload") && !disabled) //Reload without spending the whole magazine
+        if (Input.GetButtonDown(inputPrefix + "Reload") && !disabled && ammo < maxAmmo) //Reload without spending the whole magazine
         {
             isReloading = true;
         }
@@ -100,6 +100,7 @@ public class PlayerWeaponRanged : MonoBehaviour
     void Shoot()
     {
         ammo--;
+        AudioFW.Play("gunshot");
         if (ultOn)
         {
             gunRayVector = abilitiesScript.newGunRay;

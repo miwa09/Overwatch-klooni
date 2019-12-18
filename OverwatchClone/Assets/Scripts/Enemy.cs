@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     public bool takenDamage = false;
 
 
+
     void Update()
     {
         if (hitpoints <= 0 && !hasDied) //Destroy the enemy gameobject once it's out of hitpoints
@@ -54,6 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
     {
         hitpoints = 0;
         hpUI.text = "Dead";
+        GetComponent<NavMeshAgent>().enabled = false;
         Renderer[] meshes = gameObject.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in meshes) //This is only so there is some feedback while testing
         {
@@ -67,6 +69,13 @@ public class Enemy : MonoBehaviour, IDamageable, IStunable {
         deathParticles.Play();
         gameObject.GetComponent<DeathCull>().enabled = true;
         GetComponent<Iai>().Death();
+        if (isBoss) {
+            GameManager gm = (GameManager)FindObjectOfType(typeof(GameManager));
+            if (gm.finalStage) {
+                gm.bossedDead++;
+            }
+        }
+
         hasDied = true; //So the kill function is only run once
     }
 

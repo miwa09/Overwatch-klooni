@@ -12,7 +12,7 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
     NavMeshAgent agent;
     bool exploded = false;
     float explodeTimer = 0;
-    float explodeTicker = 1;
+    public float explodeAfter = 1;
     public float doorDamage = 40;
     public float playerDamage = 20;
     float stopTimer = 0;
@@ -29,6 +29,9 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
     }
     void Start()
     {
+        if (isWheel) {
+            AudioFW.Play("warning");
+        }
         agent = GetComponent<NavMeshAgent>();
         GoNextWaypoint();
     }
@@ -55,7 +58,7 @@ public class BasicEnemyMovement : MonoBehaviour, Iai, IStoppable
         agent.destination = transform.position;
             if (!exploded && !GetComponent<Enemy>().hasDied) {
             explodeTimer += Time.deltaTime;
-            if (explodeTimer >= explodeTicker) {
+            if (explodeTimer >= explodeAfter) {
                 Collider[] playersHit = Physics.OverlapSphere(transform.position, 2);
                 GameManager gm = FindObjectOfType<GameManager>();
                 gm.doorHP -= doorDamage;

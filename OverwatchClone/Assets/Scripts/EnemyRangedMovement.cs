@@ -7,7 +7,7 @@ public class EnemyRangedMovement : MonoBehaviour, Iai
 {
     public List<Transform> waypoints;
     public float waypointTriggerDistance = 1f;
-    int nextWaypoint = 0;
+    public int nextWaypoint = 0;
     NavMeshAgent agent;
     EnemyRanged gunScript;
 
@@ -24,18 +24,16 @@ public class EnemyRangedMovement : MonoBehaviour, Iai
     void Update()
     {
         var d = Vector3.Distance(waypoints[nextWaypoint].position, transform.position);
-        if (gunScript.target != null) {
+        if (gunScript.target != null && nextWaypoint > 0) {
             return;
         }
 
-        if (gunScript.target == null) {
             if (d < waypointTriggerDistance) {
                 if (nextWaypoint < waypoints.Count - 1) {
                     nextWaypoint++;
                 } else nextWaypoint--;
                 GoNextWaypoint();
             }
-        }
     }
     public void Death() {
         if (agent.isActiveAndEnabled) {

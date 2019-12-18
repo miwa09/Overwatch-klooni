@@ -37,7 +37,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public float ultChargeMax = 2310f;
     float ultTimer = 0f;
     float ultTicker = 1f;
-    bool ultReady = false;
+    public bool ultReady = false;
     bool ultOn = false;
     public Text ultUI;
     float normalGunDeviation;
@@ -60,9 +60,10 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
     public Collider ultActiveTarget;
     public GameObject ultActiveTargetMarker;
     public Transform canvas;
+    public Image crosshair;
 
     void Start() {
-        ultCharge = 2300;
+        ultCharge = 0;
         playerIdentifier = gameObject.GetComponent<PlayerIdentifier>();
         moveScript = gameObject.GetComponent<PlayerMover>();
         gunScript = gameObject.GetComponent<PlayerWeaponRanged>();
@@ -115,14 +116,14 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             if (ultCharge >= ultChargeMax) {
                 ultReady = true;
             }
-            ultUI.text = "" + (Mathf.RoundToInt((ultCharge / ultChargeMax * 100)));
+            ultUI.text = "" + (Mathf.RoundToInt((ultCharge / ultChargeMax * 100)) + "%");
             ultUI.color = Color.white;
         }
         if (ultReady && !ultOn) {
             SAbilityUlti();
-            ultUI.text = "Ultimate";
-            ultUI.color = Color.blue;
         }
+        ultUI.text = "" + Mathf.RoundToInt(ultCharge / ultChargeMax * 100) + "%";
+        ultUI.color = Color.white;
         if (ultOn) {
             UltiActive();
         }
@@ -244,6 +245,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             ultCharge = 0;
             ultOn = false;
             ultReady = false;
+            crosshair.enabled = true;
             gunScript.reloadTime = normalGunReload;
             gunScript.maxDeviation = normalGunDeviation;
             ultActiveTargetMarker.SetActive(false);
@@ -306,6 +308,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             //    ultPotentialMarkersActive[i].SetActive(true);
             //}
             gunScript.ultOn = true;
+            crosshair.enabled = false;
             ultActiveTarget = UltFindActiveTarget(visible);
             newGunRay = ultActiveTarget.transform.position - transform.position;
             var markerPos = playerCamera.WorldToScreenPoint(ultActiveTarget.transform.position);
@@ -317,6 +320,7 @@ public class PlayerAbilitiesSoldier76 : MonoBehaviour, IUltCharge {
             ultActiveTargetMarker.SetActive(false);
         }
         if (ultActiveTarget == null) {
+            crosshair.enabled = true;
             gunScript.ultOn = false;
         }
         //var min = invisible.Min(c => Vector3.Angle(playerCamera.transform.forward, c.transform.position - transform.position));

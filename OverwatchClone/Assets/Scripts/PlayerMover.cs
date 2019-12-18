@@ -28,10 +28,15 @@ public class PlayerMover : MonoBehaviour
     float jumpTimer = 0;
     float jumpTicker = 0.2f;
     Vector3 lastTargetVelocity;
+    bool inGround = false;
+    int lastFSIndex;
+    public float footstepInterval = 0.1f;
+    Vector3 lastFootstepSpot;
 
     void Start()
     {
         rig = gameObject.GetComponent<Rigidbody>();
+        lastFootstepSpot = transform.position;
         //groundCull = 1 << groundMask.value;
         //groundCull = ~groundCull;
     }
@@ -39,14 +44,17 @@ public class PlayerMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (isGrounded && !jumped) {
             rig.useGravity = false;
-            rig.velocity = Vector3.zero;
+            rig.velocity = new Vector3 (rig.velocity.x, 0, rig.velocity.z);
         } else rig.useGravity = true;
-        if (Input.GetButton(inputPrefix + "Jump") && isGrounded) {
+        if (Input.GetButton(inputPrefix + "Jump") && isGrounded && !jumped) {
             jumped = true;
+            rig.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y), ForceMode.VelocityChange);
         }
         if (jumped) {
+            //rig.useGravity = true;
             jumpTimer += Time.deltaTime;
             if (jumpTimer >= jumpTicker) {
                 jumped = false;
@@ -55,18 +63,34 @@ public class PlayerMover : MonoBehaviour
         }
     }
     private void FixedUpdate() {
+        print(rig.velocity.y);
         //rig.MovePosition(rig.position + move * movementSpeed * Time.fixedDeltaTime);
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);  //Checks if the player is on the ground.
             Vector3 inputVelocity = new Vector3(Input.GetAxis(inputPrefix + "Horizontal"), 0, Input.GetAxis(inputPrefix + "Vertical"));
             inputVelocity = transform.TransformDirection(inputVelocity);
             Vector3 targetVelocity = inputVelocity * movementSpeed;
+        if (inputVelocity.magnitude > 0 && isGrounded) {
+            if (Vector3.Distance(transform.position, lastFootstepSpot) > footstepInterval) {
+                PlayFootstep();
+                lastFootstepSpot = transform.position;
+            }
+        }
         if (targetVelocity.magnitude > 3f) {
             lastTargetVelocity = targetVelocity;
         }
 
         if (Physics.Raycast(groundCheck.position, targetVelocity, out groundHit, Vector3.Distance(groundCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask) && isGrounded && !jumped) {
+            if (Physics.Raycast(groundCheck.position, Vector3.up, 0.01f, groundMask)){
+                inGround = true;
+            }
             Vector3 location = groundHit.point;
             rig.position += new Vector3(0, location.y - groundCheck.position.y, 0);
+        }
+        while (inGround) {
+            rig.position += Vector3.up * 0.01f;
+            if (Physics.Raycast(groundCheck.position, Vector3.up, 0.01f, groundMask)) {
+                inGround = true;
+            } else inGround = false;
         }
         if (Physics.Raycast(frontCheck.position + targetVelocity.normalized * 0.3f, targetVelocity, out frontHit, Vector3.Distance(frontCheck.position, targetVelocity) * Time.fixedDeltaTime, groundMask) && !hasHitWall) {
             Vector3 location = frontHit.point;
@@ -84,9 +108,9 @@ public class PlayerMover : MonoBehaviour
         }
         Debug.DrawRay(frontCheck.position + Vector3.up + lastTargetVelocity.normalized * 0.6f, lastTargetVelocity * Time.fixedDeltaTime, Color.yellow);
 
-        if (jumped && isGrounded) {
-            rig.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y), ForceMode.VelocityChange);
-        }
+        //if (jumped && isGrounded) {
+        //    rig.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y), ForceMode.VelocityChange);
+        //}
 
             Vector3 velocity = rig.velocity;
             Vector3 velocityChange = targetVelocity - velocity;
@@ -100,6 +124,14 @@ public class PlayerMover : MonoBehaviour
 
     public void moverSprint(float speed) {
         movementSpeed = speed;
+    }
+
+    void PlayFootstep() {
+        int FSIndex = Random.Range(1, 8);
+        while (FSIndex == lastFSIndex) {
+            FSIndex = Random.Range(1, 8);
+        }
+        AudioFW.Play("footstep" + FSIndex);
     }
 
 }

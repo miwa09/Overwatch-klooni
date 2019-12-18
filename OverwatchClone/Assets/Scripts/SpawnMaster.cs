@@ -29,7 +29,21 @@ public class SpawnMaster : MonoBehaviour
     }
     void EnableNavMeshAgent(GameObject obj) {
         obj.GetComponent<NavMeshAgent>().enabled = true;
-        obj.GetComponent<BasicEnemyMovement>().enabled = true;
+        if (obj.GetComponent<BasicEnemyMovement>() != null) {
+            obj.GetComponent<BasicEnemyMovement>().enabled = true;
+        }
+        if (obj.GetComponent<BossJunkrat>() != null) {
+            obj.GetComponent<BossJunkrat>().enabled = true;
+        }
+        if (obj.GetComponent<EnemyBossReaper>() != null) {
+            obj.GetComponent<EnemyBossReaper>().enabled = true;
+        }
+        if (obj.GetComponent<EnemyBossRoadhog>() != null) {
+            obj.GetComponent<EnemyBossRoadhog>().enabled = true;
+        }
+        if (obj.GetComponent<EnemyRanged>() != null) {
+            obj.GetComponent<EnemyRanged>().enabled = true;
+        }
     }
     int RandomizeRoute(int minValue, int maxValue) {
         int randomValue = Random.Range(minValue, maxValue + 1);

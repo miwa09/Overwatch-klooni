@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 131638822181527610}
   - component: {fileID: 3102957856978606266}
   - component: {fileID: 1754095109600478051}
+  - component: {fileID: 7531134584801283485}
   m_Layer: 0
   m_Name: SpawnMaster
   m_TagString: Untagged
@@ -143,6 +144,43 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!320 &7531134584801283485
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131638822181527608}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+  m_InitialState: 1
+  m_WrapMode: 0
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -7485072676900726152, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -48792600829255902, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 3895998381703043687, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 6369456402580481820, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -4538306317425948346, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 8532916201139008044, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 5089758614314484365, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -8172361523368205117, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -5693050030862863458, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2585943354280818304, guid: 195f7c253072d374a885712a8579eb58, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1001 &1441921064397956554
 PrefabInstance:
   m_ObjectHideFlags: 0
