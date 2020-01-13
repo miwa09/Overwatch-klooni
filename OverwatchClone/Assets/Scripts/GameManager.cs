@@ -46,9 +46,9 @@ public class GameManager : MonoBehaviour
                 GameWon();
             }
         }
-        if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.M)) && !paused) {
+        if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.P)) && !paused) {
             GamePause();
-        } else if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.M)) && paused) {
+        } else if ((Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.P)) && paused) {
             Time.timeScale = 1;
             gameOverUI.text = "";
             resetUI.text = "";
